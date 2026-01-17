@@ -14,3 +14,4 @@ debug/*
 persist/*
 .venv/*
 site/
+site/
