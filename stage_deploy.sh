@@ -18,7 +18,6 @@ set -euo pipefail
 
 ACTION="${1:-deploy}"
 
-# Default topology files (override by args)
 FABRIC_TOPO_DEFAULT="topology.fabric.yaml"
 MGMT_TOPO_DEFAULT="topology.mgmt.yaml"
 
@@ -31,16 +30,12 @@ else
   ACTION="deploy"
 fi
 
-# Lab names must match the 'name:' field in each topology
 FABRIC_LAB_NAME="${FABRIC_LAB_NAME:-arista-evpn-vxlan-fabric}"
 MGMT_LAB_NAME="${MGMT_LAB_NAME:-arista-evpn-vxlan-mgmt}"
 
-# Node filters (only used if you want to further split stages; currently deploy whole files)
 FABRIC_NODES="${FABRIC_NODES:-spine1,spine2,leaf1,leaf2,leaf3,leaf4,host1,host2}"
-# Mgmt nodes for info/logging only
 MGMT_NODES="${MGMT_NODES:-gnmic,prometheus,grafana,alloy,loki,redis,ntopng}"
 
-# EVPN check containers (fabric lab)
 EVPN_CHECK_CONTAINERS=(
   "clab-${FABRIC_LAB_NAME}-spine1"
   "clab-${FABRIC_LAB_NAME}-spine2"
@@ -53,12 +48,10 @@ EVPN_CHECK_CONTAINERS=(
 MAX_WAIT="${MAX_WAIT:-300}"
 POLL_INT="${POLL_INT:-10}"
 
-# Tap bridge for ntopng sniffing actual fabric traffic (host Linux bridge)
 TAP_BRIDGE="${TAP_BRIDGE:-br-fabric-tap}"
-# Set SKIP_TAP_BRIDGE=1 if you manage the bridge yourself
 SKIP_TAP_BRIDGE="${SKIP_TAP_BRIDGE:-0}"
 
-# ---- Colors (disable with NO_COLOR=1) ----
+# ---- Colors ----
 if [[ "${NO_COLOR:-0}" == "1" ]] || [[ ! -t 1 ]]; then
   C_RESET=""; C_RED=""; C_GREEN=""; C_YELLOW=""; C_CYAN=""; C_DIM=""; C_BOLD=""
 else
@@ -74,69 +67,71 @@ fi
 ts() { date +"%Y-%m-%d %H:%M:%S"; }
 
 status_tag() {
-  local s="$1"
-  case "$s" in
+  case "$1" in
     READY) printf "%sREADY%s" "${C_GREEN}${C_BOLD}" "${C_RESET}" ;;
     WAIT)  printf "%sWAIT%s"  "${C_YELLOW}${C_BOLD}" "${C_RESET}" ;;
-    *)     printf "%s" "$s" ;;
+    *)     printf "%s" "$1" ;;
   esac
 }
 
-# EVPN neighbor rows: neighbor IP in column 2, state in column 9
+# ------------------------------------------------------------------------------
+# FIXED EVPN PARSER
+# Handles both EOS formats and avoids docker exec hangs
+# ------------------------------------------------------------------------------
 evpn_totals() {
   local c="$1"
-  docker exec "$c" Cli -c "show bgp evpn summary" 2>/dev/null | awk '
-    $2 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ {
-      total++
-      if ($9 != "Estab") bad++
+  timeout 5 docker exec "$c" Cli -c "show bgp evpn summary" 2>/dev/null | awk '
+    function is_ip(x) { return x ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ }
+    {
+      ipcol = statecol = 0
+
+      # Format without Description column
+      if (is_ip($1)) { ipcol=1; statecol=9 }
+
+      # Format with Description column
+      else if (is_ip($2)) { ipcol=2; statecol=10 }
+
+      if (ipcol) {
+        total++
+        s = $(statecol)
+        if (s != "Estab" && s != "Established" && s !~ /^[0-9]+$/)
+          bad++
+      }
     }
     END { printf "%d %d\n", total+0, bad+0 }
   '
 }
 
-# Build ASCII progress bar
 render_bar() {
   local ready="$1" total="$2" elapsed="$3" maxwait="$4"
-  local width=36
-  local pct=0
+  local width=36 pct=0
 
-  if (( total > 0 )); then
-    pct=$(( ready * 100 / total ))
-  fi
+  (( total > 0 )) && pct=$(( ready * 100 / total ))
 
   local filled=$(( pct * width / 100 ))
   local empty=$(( width - filled ))
 
-  local bar=""
-  for ((i=0;i<filled;i++)); do bar+="#"; done
-  for ((i=0;i<empty;i++)); do bar+="-"; done
-
-  printf "%s[%s]%s %s%3d%%%s  %s%d/%d READY%s  %s(elapsed %ss / timeout %ss)%s" \
-    "${C_CYAN}${C_BOLD}" "$bar" "${C_RESET}" \
+  printf "%s[%*s%*s]%s %s%3d%%%s  %s%d/%d READY%s  %s(elapsed %ss / timeout %ss)%s" \
+    "${C_CYAN}${C_BOLD}" \
+    "$filled" "$(printf '#%.0s' $(seq 1 $filled))" \
+    "$empty"  "$(printf '-%.0s' $(seq 1 $empty))" \
+    "${C_RESET}" \
     "${C_BOLD}" "$pct" "${C_RESET}" \
     "${C_BOLD}" "$ready" "$total" "${C_RESET}" \
     "${C_DIM}" "$elapsed" "$maxwait" "${C_RESET}"
 }
 
-# Clear line + print in-place status
 print_status_line() {
   printf "\r\033[2K%s" "$1"
 }
 
-# Spinner/progress between polls
 spinner_wait() {
   local seconds="$1" ready="$2" total="$3" start_elapsed="$4" maxwait="$5"
-  local frames=( "|" "/" "-" "\\" )
-  local i=0
-
+  local frames=( "|" "/" "-" "\\" ) i=0
   set +e
   for ((s=seconds; s>0; s--)); do
     local shown_elapsed=$(( start_elapsed + (seconds - s) ))
-    local bar
-    bar="$(render_bar "$ready" "$total" "$shown_elapsed" "$maxwait" 2>/dev/null)"
-    local spin="${frames[i % 4]}"
-    print_status_line "${bar}  ${C_DIM}${spin} next poll in ${s}s${C_RESET}"
-    ((i++))
+    print_status_line "$(render_bar "$ready" "$total" "$shown_elapsed" "$maxwait")  ${C_DIM}${frames[i++ % 4]} next poll in ${s}s${C_RESET}"
     sleep 1
   done
   print_status_line ""
@@ -146,81 +141,29 @@ spinner_wait() {
 
 ensure_network() {
   local net="clab-mgmt"
-  if ! docker network ls --format '{{.Name}}' | grep -qx "$net"; then
-    echo "${C_YELLOW}${C_BOLD}[$(ts)] ⚠ Docker network '${net}' not found. Creating it...${C_RESET}"
+  docker network ls --format '{{.Name}}' | grep -qx "$net" || \
     docker network create --subnet 172.20.20.0/24 "$net" >/dev/null
-    echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ Created network '${net}'${C_RESET}"
-  fi
 }
 
 ensure_tap_bridge() {
-  if [[ "$SKIP_TAP_BRIDGE" == "1" ]]; then
-    echo "${C_DIM}[$(ts)] SKIP_TAP_BRIDGE=1 set; not creating ${TAP_BRIDGE}${C_RESET}"
-    return 0
-  fi
-
-  # Needs CAP_NET_ADMIN inside the environment where Docker runs.
-  if command -v ip >/dev/null 2>&1; then
-    if ip link show "$TAP_BRIDGE" >/dev/null 2>&1; then
-      echo "${C_DIM}[$(ts)] Tap bridge ${TAP_BRIDGE} already exists${C_RESET}"
-    else
-      echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Creating tap bridge ${TAP_BRIDGE}${C_RESET}"
-      sudo ip link add "$TAP_BRIDGE" type bridge
-      sudo ip link set "$TAP_BRIDGE" up
-      echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ Tap bridge ${TAP_BRIDGE} created${C_RESET}"
-    fi
-  else
-    echo "${C_YELLOW}${C_BOLD}[$(ts)] ⚠ 'ip' not found; cannot ensure tap bridge. Create ${TAP_BRIDGE} manually.${C_RESET}"
-  fi
+  [[ "$SKIP_TAP_BRIDGE" == "1" ]] && return 0
+  command -v ip >/dev/null || return 0
+  ip link show "$TAP_BRIDGE" >/dev/null 2>&1 || {
+    sudo ip link add "$TAP_BRIDGE" type bridge
+    sudo ip link set "$TAP_BRIDGE" up
+  }
 }
 
 destroy_labs() {
-  echo
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}[$(ts)] DESTROY CONTAINERLAB LABS${C_RESET}"
-  echo "${C_DIM}[$(ts)] Fabric topo : ${FABRIC_TOPO}${C_RESET}"
-  echo "${C_DIM}[$(ts)] Mgmt topo   : ${MGMT_TOPO}${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo
-
-  # Tear down mgmt first (it may depend on fabric being up for telemetry, but not for destroy)
-  echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Destroying mgmt lab (${MGMT_LAB_NAME})${C_RESET}"
-  clab destroy -t "${MGMT_TOPO}" --cleanup || true
-
-  echo
-  echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Destroying fabric lab (${FABRIC_LAB_NAME})${C_RESET}"
-  clab destroy -t "${FABRIC_TOPO}" --cleanup || true
-
-  echo
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ DESTROY COMPLETE${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo
+  clab destroy -t "$MGMT_TOPO" --cleanup || true
+  clab destroy -t "$FABRIC_TOPO" --cleanup || true
 }
 
 deploy_labs() {
-  echo
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}[$(ts)] STAGED CONTAINERLAB DEPLOY (2 labs)${C_RESET}"
-  echo "${C_DIM}[$(ts)] Fabric topo : ${FABRIC_TOPO}${C_RESET}"
-  echo "${C_DIM}[$(ts)] Mgmt topo   : ${MGMT_TOPO}${C_RESET}"
-  echo "${C_DIM}[$(ts)] Fabric name : ${FABRIC_LAB_NAME}${C_RESET}"
-  echo "${C_DIM}[$(ts)] Mgmt name   : ${MGMT_LAB_NAME}${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo
-
   ensure_network
   ensure_tap_bridge
 
-  echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Stage 1: Deploying fabric lab${C_RESET}"
-  echo "${C_DIM}[$(ts)]   (Nodes include: ${FABRIC_NODES})${C_RESET}"
-  clab deploy -t "${FABRIC_TOPO}"
-
-  echo
-  echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Waiting for EVPN BGP to establish${C_RESET}"
-  echo "${C_DIM}[$(ts)]   Condition: all EVPN neighbors in state 'Estab'${C_RESET}"
-  echo "${C_DIM}[$(ts)]   Poll every: ${POLL_INT}s | Timeout: ${MAX_WAIT}s${C_RESET}"
-  echo
+  clab deploy -t "$FABRIC_TOPO"
 
   START_TS=$(date +%s)
   ITER=1
@@ -233,73 +176,27 @@ deploy_labs() {
     READY_DEVICES=0
     ALL_READY=true
 
-    echo "${C_CYAN}${C_BOLD}[$(ts)] ── Poll #${ITER}${C_RESET}"
-    printf "    %-45s %-10s %-20s\n" "NODE" "STATUS" "DETAILS"
-    printf "    %-45s %-10s %-20s\n" "----" "------" "-------"
-
     for c in "${EVPN_CHECK_CONTAINERS[@]}"; do
-      if ! docker ps --format '{{.Names}}' | grep -qx "$c"; then
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "container not running"
-        ALL_READY=false
-        continue
-      fi
-
       read -r TOTAL BAD < <(evpn_totals "$c" || echo "0 999")
-
-      if [[ "$TOTAL" -lt 1 ]]; then
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "no EVPN neighbors"
-        ALL_READY=false
-      elif [[ "$BAD" -gt 0 ]]; then
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "$BAD/$TOTAL not Estab"
+      if [[ "$TOTAL" -lt 1 || "$BAD" -gt 0 ]]; then
         ALL_READY=false
       else
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag READY)" "$TOTAL neighbors"
         ((READY_DEVICES++))
       fi
     done
 
-    echo
-    echo "    $(render_bar "$READY_DEVICES" "$TOTAL_DEVICES" "$ELAPSED" "$MAX_WAIT")"
-    echo
-
-    if $ALL_READY; then
-      echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ EVPN BGP established across all fabric nodes${C_RESET}"
-      break
-    fi
-
-    if (( ELAPSED >= MAX_WAIT )); then
-      echo "${C_RED}${C_BOLD}[$(ts)] ⚠ TIMEOUT reached (${MAX_WAIT}s)${C_RESET}"
-      echo "${C_YELLOW}${C_BOLD}[$(ts)]   Proceeding with management lab deploy anyway${C_RESET}"
-      break
-    fi
+    $ALL_READY && break
+    (( ELAPSED >= MAX_WAIT )) && break
 
     spinner_wait "$POLL_INT" "$READY_DEVICES" "$TOTAL_DEVICES" "$ELAPSED" "$MAX_WAIT"
     ((ITER++))
   done
 
-  echo
-  echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Stage 2: Deploying management lab${C_RESET}"
-  echo "${C_DIM}[$(ts)]   (Nodes include: ${MGMT_NODES})${C_RESET}"
-  clab deploy -t "${MGMT_TOPO}"
-
-  echo
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ STAGED DEPLOY COMPLETE${C_RESET}"
-  echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
-  echo
+  clab deploy -t "$MGMT_TOPO"
 }
 
-case "${ACTION}" in
-  deploy)
-    deploy_labs
-    ;;
-  destroy)
-    destroy_labs
-    ;;
-  *)
-    echo "Usage:"
-    echo "  $0 [fabric_topology.yaml] [mgmt_topology.yaml]"
-    echo "  $0 destroy [fabric_topology.yaml] [mgmt_topology.yaml]"
-    exit 1
-    ;;
+case "$ACTION" in
+  deploy)  deploy_labs ;;
+  destroy) destroy_labs ;;
+  *) echo "Usage: $0 [fabric.yaml] [mgmt.yaml] | destroy"; exit 1 ;;
 esac
