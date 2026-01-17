@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # required for mike versioning
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,22 +29,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-docs.txt
 
-      - name: Configure git
+      - name: Configure git for gh-pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Deploy docs
+      - name: Deploy versioned docs with mike
         env:
           REF: ${{ github.ref }}
           REF_NAME: ${{ github.ref_name }}
         run: |
-          if [[ "$REF" == refs/tags/* ]]; then
-            mike deploy --push --update-aliases "$REF_NAME" latest
+          set -euo pipefail
+          if [[ "${REF}" == refs/tags/* ]]; then
+            VERSION="${REF_NAME}"
+            mike deploy --push --update-aliases "${VERSION}" latest
             mike set-default --push latest
           else
             mike deploy --push --update-aliases main latest
             mike set-default --push latest
           fi
-EOF
-
