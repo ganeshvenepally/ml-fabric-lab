@@ -44,7 +44,7 @@ attached to the same management network.
 
 ### Deploy the full lab
 ```bash
-./stage_deploy.sh
+bash stage_deploy.sh
 ```
 
 This will:
@@ -54,7 +54,7 @@ This will:
 
 ### Destroy the lab
 ```bash
-./stage_deploy.sh destroy
+bash stage_deploy.sh destroy
 ```
 
 ---
