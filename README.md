@@ -1,233 +1,117 @@
-# Arista EVPN/VXLAN Containerlab Lab
-> **Split Fabric & Management Labs with Real Traffic Visibility**
+# Arista EVPN / VXLAN Containerlab Lab
 
-This repository provides a **production-grade containerlab design** implementing an
-**Arista EVPN/VXLAN fabric** with a **separate management / observability stack**.
-The two labs are cleanly separated but interconnected using:
-- a shared Docker management network (`clab-mgmt`)
-- a shared Linux bridge tap (`br-fabric-tap`) for **real packet capture**
+This repository provides a **split fabric + management Containerlab lab** for
+testing **Arista EVPN/VXLAN (eBGP underlay, EVPN overlay)** with:
 
-Designed and tested for **macOS + OrbStack + Docker + containerlab**.
+- Real data-plane traffic
+- Traffic mirroring (SPAN → ntopng)
+- Full telemetry, metrics, and logging stack
+- Deterministic staged deployment
 
----
-
-## Table of Contents
-- [Architecture Overview](#architecture-overview)
-- [Topology Diagram](#topology-diagram)
-- [Repository Structure](#repository-structure)
-- [OrbStack Prerequisites](#orbstack-prerequisites)
-- [Deployment Workflow](#deployment-workflow)
-- [stage_deploy.sh](#stage_deploysh)
-- [Observability Stack](#observability-stack)
-- [EOS SPAN Configuration](#eos-span-configuration)
-- [CI Linting](#ci-linting)
-- [GitHub Pages](#github-pages)
-- [Troubleshooting](#troubleshooting)
+The design is optimized for **local labs (macOS + OrbStack)** while remaining
+portable to Linux.
 
 ---
 
-## Architecture Overview
+## 🧱 Lab Overview
 
-### Fabric Lab
-- 2× Arista spines (eBGP underlay, EVPN route-servers)
+### Fabric
+- 2× Arista spines (EVPN route servers)
 - 4× Arista leafs (VXLAN VTEPs)
-- 2× Linux hosts (iperf traffic generation)
-- VLAN 10 stretched via EVPN
-- Anycast gateway (VARP)
-- SPAN mirror to tap interface
+- eBGP underlay, EVPN overlay
+- Anycast gateway using VARP
+- Linux hosts generating continuous traffic
 
-### Management Lab
-- gnmic (gNMI telemetry)
-- Prometheus (metrics)
-- Grafana (dashboards)
-- Alloy + Loki (logs)
-- Redis
-- ntopng (packet analysis)
+### Management / Observability
+- gNMI telemetry (gnmic)
+- Metrics (Prometheus)
+- Dashboards (Grafana)
+- Logs (Alloy + Loki)
+- Traffic analysis (ntopng via SPAN tap)
 
-### Shared Components
-- Docker network: `clab-mgmt`
-- Linux bridge: `br-fabric-tap` (host-based packet tap)
+Fabric and management are deployed as **separate Containerlab topologies**
+attached to the same management network.
 
 ---
 
-## Topology Diagram
+## 🚀 Quick Start
 
-```text
-                    +---------+       +---------+
-                    | spine1  |       | spine2  |
-                    +----+----+       +----+----+
-                         \                 //
-                          \               //
-                    +------+----+     +----+------+
-                    |   leaf1   |     |   leaf4   |
-                    | (VTEP)    |     | (VTEP)    |
-                    +---+---+---+     +---+---+---+
-                        |   |               |
-                     host1   |            host2
-                             |
-                       SPAN → Eth5
-                             |
-                    br-fabric-tap (Linux bridge)
-                             |
-                         ntopng
-```
+### Requirements
+- Docker
+- containerlab
+- OrbStack (macOS) or Linux
+- Git
 
----
-
-## Repository Structure
-
-```
-.
-├── topology.fabric.yaml
-├── topology.mgmt.yaml
-├── stage_deploy.sh
-├── README.md
-├── .github/workflows/lint.yml
-├── .yamllint
-├── configs/
-│   ├── fabric/
-│   ├── gnmic/
-│   ├── prometheus/
-│   ├── grafana/
-│   ├── alloy/
-│   └── loki/
-└── persist/
-```
-
----
-
-## OrbStack Prerequisites
-
-You must create a Linux bridge **inside OrbStack's Linux environment**.
-
-```bash
-orb create ubuntu clab
-orb -m clab sudo ip link add br-fabric-tap type bridge
-orb -m clab sudo ip link set br-fabric-tap up
-```
-
-Verify:
-
-```bash
-orb -m clab ip link show br-fabric-tap
-```
-
-> Docker bridge options (`com.docker.network.bridge.*`) are **not required**.
-
----
-
-## Deployment Workflow
-
-The lab is deployed in two stages:
-
-1. Fabric lab
-2. EVPN convergence check
-3. Management lab
-
-All handled by `stage_deploy.sh`.
-
----
-
-## stage_deploy.sh
-
-### Deploy
+### Deploy the full lab
 ```bash
 ./stage_deploy.sh
 ```
 
-### Destroy
+This will:
+1. Deploy the **fabric lab**
+2. Wait for EVPN BGP convergence
+3. Deploy **hosts + management stack**
+
+### Destroy the lab
 ```bash
 ./stage_deploy.sh destroy
 ```
 
-### Environment Variables
-| Variable | Description |
-|--------|-------------|
-| `MAX_WAIT` | EVPN convergence timeout |
-| `POLL_INT` | Poll interval |
-| `SKIP_TAP_BRIDGE=1` | Skip bridge creation |
-| `NO_COLOR=1` | Disable ANSI output |
+---
+
+## 📖 Documentation
+
+Full documentation (topology, operations, EVPN deep dives, troubleshooting)
+is published via **MkDocs**:
+
+👉 **https://laitm.github.io/ml-fabric-lab/**
+
+Key sections:
+- Fabric topology and design
+- Management stack architecture
+- EVPN/VXLAN control-plane walkthroughs
+- ntopng traffic visibility
+- Common failure modes and fixes
+
+> The `README.md` is intentionally concise.
+> All detailed documentation lives in `/docs` and on the site above.
 
 ---
 
-## Observability Stack
+## 🗂 Repository Structure
 
-| Service | URL |
-|------|-----|
-| Grafana | http://localhost:3000 |
-| Prometheus | http://localhost:9090 |
-| ntopng | http://localhost:3001 |
-| gnmic exporter | http://localhost:9804 |
-
-Grafana default credentials: `admin / admin`
-
----
-
-## EOS SPAN Configuration
-
-Traffic will only reach ntopng if SPAN is configured on **leaf1**.
-
-Example:
-
-```eos
-monitor session 1
-  source interface Ethernet1
-  source interface Ethernet2
-  source interface Ethernet10
-  destination interface Ethernet5
+```text
+.
+├── topology.fabric.yaml      # Fabric-only containerlab topology
+├── topology.mgmt.yaml        # Management / observability topology
+├── stage_deploy.sh           # Staged deploy & destroy script
+├── docs/                     # MkDocs documentation source
+├── mkdocs.yml                # MkDocs configuration
+├── requirements-docs.txt     # Docs build dependencies
+└── configs/                  # EOS, telemetry, and dashboard configs
 ```
 
-You may also mirror VLANs or Port-Channels.
+---
+
+## 🧠 Design Principles
+
+- **Deterministic startup** (fabric first, then management)
+- **Real traffic** (not synthetic demos)
+- **No duplication** between README and docs
+- **CI-published documentation**
+- **Safe to break and debug**
 
 ---
 
-## CI Linting
+## ⚠️ Notes
 
-GitHub Actions automatically validates:
-- YAML syntax (`yamllint`)
-- Shell scripts (`shellcheck`)
-- Trailing whitespace
-
-Workflow: `.github/workflows/lint.yml`
+- The `site/` directory is intentionally **not tracked**
+- Documentation output is published from GitHub Actions to `gh-pages`
+- GitHub Pages is configured to use **Actions**, not Jekyll
 
 ---
 
-## GitHub Pages
+## 📜 License
 
-This repository is ready for **GitHub Pages**.
-
-### Enable Pages
-1. Repo → **Settings → Pages**
-2. Source: `main` branch
-3. Folder: `/docs`
-
-### Files
-```
-docs/
-└── index.md
-```
-
-The Pages site renders the same content as this README.
-
----
-
-## Troubleshooting
-
-**ntopng shows no traffic**
-- Verify SPAN config on leaf1
-- Confirm `br-fabric-tap` exists
-- Ensure ntopng is capturing `eth1`
-
-**EVPN never converges**
-- Check EOS configs
-- Validate underlay IP reachability
-
----
-
-## License
-
-MIT (or your preferred license)
-
----
-
-Happy labbing 🚀
+This project is provided for lab, testing, and educational use.
+See individual component licenses for third-party tools.
