@@ -2,7 +2,7 @@
 # gNMIc configuration
 # - Arista EOS (OpenConfig)
 # - BGP neighbor telemetry
-# - Prometheus exporter
+# - Remote write to Grafana Mimir only
 # ==========================================================
 
 username: admin
@@ -38,38 +38,32 @@ subscriptions:
     stream-mode: sample
     sample-interval: 5s
     paths:
-      # ---------- Peer identity ----------
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/peer-as
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/peer-group
-
-      # ---------- Session health ----------
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/session-state
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/established-transitions
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/last-established
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/uptime
-
-      # ---------- Message counters ----------
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/messages/sent/UPDATE
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/messages/received/UPDATE
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/messages/sent/NOTIFICATION
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/messages/received/NOTIFICATION
-
-      # ---------- Prefix counters ----------
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/prefixes/received
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/prefixes/accepted
       - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/neighbors/neighbor/state/prefixes/sent
 
   bgp_global:
-      mode: stream
-      stream-mode: sample
-      sample-interval: 10s
-      paths:
-        # overall BGP RIB/prefix count
-        - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/state/total-prefixes
-        # per AFI/SAFI prefix count (you currently have IPV4_UNICAST only)
-        - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/afi-safis/afi-safi/state/afi-safi-name
-        - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/afi-safis/afi-safi/state/total-prefixes
+    mode: stream
+    stream-mode: sample
+    sample-interval: 10s
+    paths:
+      - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/state/total-prefixes
+      - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/afi-safis/afi-safi/state/afi-safi-name
+      - /network-instances/network-instance[name=default]/protocols/protocol[identifier=BGP][name=BGP]/bgp/global/afi-safis/afi-safi/state/total-prefixes
 
+# ----------------------------------------------------------
+# Outputs (Mimir only)
+# ----------------------------------------------------------
 # ----------------------------------------------------------
 # Outputs
 # ----------------------------------------------------------

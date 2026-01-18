@@ -15,16 +15,16 @@ topology:
       ports:
         - 9804:9804
 
-    prometheus:
+    mimir:
       kind: linux
-      image: quay.io/prometheus/prometheus:latest
+      image: grafana/mimir:latest
       mgmt-ipv4: 172.20.20.214
       binds:
-        - configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-        - ./persist/prometheus:/prometheus
-      cmd: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
+        - configs/mimir/mimir.yml:/etc/mimir/mimir.yml:ro
+        - ./persist/mimir:/data
+      cmd: "-config.file=/etc/mimir/mimir.yml"
       ports:
-        - 9090:9090
+        - 9009:9009
 
     grafana:
       kind: linux
@@ -51,6 +51,7 @@ topology:
       ports:
         - 1514:1514/udp
         - 1514:1514/tcp
+        - 1515:1515/udp
         - 12345:12345
 
     loki:

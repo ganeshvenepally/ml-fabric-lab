@@ -1,21 +1,14 @@
 loki.write "to_loki" {
   endpoint {
-    url        = "http://clab-arista-evpn-vxlan-lab-loki:3100/loki/api/v1/push"
+    url        = "http://loki:3100/loki/api/v1/push"
     batch_wait = "250ms"
     batch_size = "512KiB"
   }
 }
 
 loki.relabel "syslog_rules" {
-  // Required even if you're only using `.rules`.
-  // Empty list is fine when using this component only as a rules exporter.
   forward_to = []
 
-  // -----------------------------
-  // Host handling
-  // -----------------------------
-
-  // Set host from parsed message hostname (RFC3164/RFC5424)
   rule {
     action        = "replace"
     source_labels = ["__syslog_message_hostname"]
@@ -24,7 +17,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // Clear RFC NILVALUE "-"
   rule {
     action        = "replace"
     source_labels = ["host"]
@@ -33,7 +25,6 @@ loki.relabel "syslog_rules" {
     replacement   = ""
   }
 
-  // Always keep sender connection IP
   rule {
     action        = "replace"
     source_labels = ["__syslog_connection_ip_address"]
@@ -42,7 +33,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // Syslog facility
   rule {
     action        = "replace"
     source_labels = ["__syslog_message_facility"]
@@ -51,7 +41,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // Application name
   rule {
     action        = "replace"
     source_labels = ["__syslog_message_app_name"]
@@ -60,11 +49,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // -----------------------------
-  // Syslog severity (canonicalized)
-  // -----------------------------
-
-  // Keep original severity label (0-7)
   rule {
     action        = "replace"
     source_labels = ["__syslog_message_severity"]
@@ -73,7 +57,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // Canonical severity number (string 0-7)
   rule {
     action        = "replace"
     source_labels = ["__syslog_message_severity"]
@@ -82,7 +65,6 @@ loki.relabel "syslog_rules" {
     replacement   = "$1"
   }
 
-  // Canonical severity name from severity_num
   rule {
     action        = "replace"
     source_labels = ["severity_num"]
@@ -140,7 +122,6 @@ loki.relabel "syslog_rules" {
     replacement   = "debug"
   }
 
-  // Fallback: if host is empty, use sender IP
   rule {
     action        = "replace"
     source_labels = ["host", "__syslog_connection_ip_address"]
@@ -150,9 +131,6 @@ loki.relabel "syslog_rules" {
   }
 }
 
-//
-// Listener 1: RFC5424 on UDP 1514
-//
 loki.source.syslog "ceos_5424" {
   listener {
     address       = "0.0.0.0:1514"
@@ -164,16 +142,10 @@ loki.source.syslog "ceos_5424" {
     }
   }
 
-  // Apply relabeling rules to each log entry before forwarding
   relabel_rules = loki.relabel.syslog_rules.rules
-
-  // Forward to Loki
-  forward_to = [loki.write.to_loki.receiver]
+  forward_to    = [loki.write.to_loki.receiver]
 }
 
-//
-// Listener 2: RFC3164 on UDP 1515
-//
 loki.source.syslog "ceos_3164" {
   listener {
     address       = "0.0.0.0:1515"
@@ -187,4 +159,48 @@ loki.source.syslog "ceos_3164" {
 
   relabel_rules = loki.relabel.syslog_rules.rules
   forward_to    = [loki.write.to_loki.receiver]
+}
+
+prometheus.scrape "gnmic" {
+  targets = [
+    { __address__ = "gnmic:9804" },
+  ]
+
+  scrape_interval = "10s"
+  metrics_path    = "/metrics"
+
+  forward_to = [prometheus.relabel.gnmic.receiver]
+}
+
+prometheus.relabel "gnmic" {
+  // Rename job to something human-friendly
+  rule {
+    action        = "replace"
+    source_labels = ["job"]
+    target_label  = "job"
+    regex         = ".*"
+    replacement   = "gnmic"
+  }
+
+  // Optional lab label
+  rule {
+    action       = "replace"
+    target_label = "lab"
+    replacement  = "arista-evpn-vxlan-mgmt"
+  }
+
+  // Drop high-cardinality path-like labels
+  rule {
+    action = "labeldrop"
+    regex  = "path|xpath|json_path|gnmi_path|encoding|subscription"
+  }
+
+  forward_to = [prometheus.remote_write.mimir.receiver]
+}
+
+
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://mimir:9009/api/v1/push"
+  }
 }
