@@ -58,14 +58,21 @@ topology:
         - ip route replace default via 192.168.10.1
         - sh -lc 'iperf3 -s -D'
 
-    # Host Linux bridge (must exist in OrbStack VM)
-    br-fabric-tap:
-      kind: bridge
+    ntopng:
+      kind: linux
+      image: ntop/ntopng:latest
+      mgmt-ipv4: 172.20.20.219
+      cmd: /bin/sh -lc 'exec ntopng --community --redis redis -i eth1 --disable-autologout'
+      binds:
+        - ./persist/ntopng:/var/lib/ntopng
+      ports:
+        - 3001:3000/tcp
 
   links:
     # Leaf ↔ Spine
     - endpoints: ["leaf1:eth1", "spine1:eth1"]
     - endpoints: ["leaf1:eth2", "spine2:eth1"]
+    - endpoints: ["leaf1:eth5", "ntopng:eth1"]
 
     - endpoints: ["leaf2:eth1", "spine1:eth3"]
     - endpoints: ["leaf2:eth2", "spine2:eth3"]
@@ -79,6 +86,3 @@ topology:
     # Hosts
     - endpoints: ["host1:eth1", "leaf1:eth10"]
     - endpoints: ["host2:eth1", "leaf4:eth10"]
-
-    # SPAN / TAP output (leaf1 eth5 must be SPAN destination in EOS)
-    - endpoints: ["leaf1:eth5", "br-fabric-tap:leaf1eth5"]

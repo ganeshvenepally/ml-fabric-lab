@@ -6,38 +6,81 @@ set -euo pipefail
 #
 # Deploy:
 #   ./stage_deploy.sh [fabric_topology.yaml] [mgmt_topology.yaml]
+#   ./stage_deploy.sh -r|-rf|-rm [fabric_topology.yaml] [mgmt_topology.yaml]
+#
 # Destroy:
 #   ./stage_deploy.sh destroy [fabric_topology.yaml] [mgmt_topology.yaml]
 #
-# Notes:
-# - Assumes both labs attach to the same external mgmt network: clab-mgmt
-# - If using a shared host bridge for tap traffic (e.g. br-fabric-tap), this script
-#   can create it inside the environment where Docker runs (OrbStack Linux machine),
-#   unless you set SKIP_TAP_BRIDGE=1.
+# Flags:
+#   -r,  --reconfigure         reconfigure BOTH labs (standard staged flow + wait)
+#   -rf, --reconfigure-fabric  reconfigure ONLY fabric lab (FAST: no wait, no mgmt)
+#   -rm, --reconfigure-mgmt    reconfigure ONLY mgmt lab   (FAST: no fabric, no wait)
 # ------------------------------------------------------------------------------
 
-ACTION="${1:-deploy}"
+ACTION="deploy"
+RECONF_FABRIC=0
+RECONF_MGMT=0
 
 # Default topology files (override by args)
 FABRIC_TOPO_DEFAULT="topology.fabric.yaml"
 MGMT_TOPO_DEFAULT="topology.mgmt.yaml"
 
-if [[ "${ACTION}" == "destroy" ]]; then
-  FABRIC_TOPO="${2:-$FABRIC_TOPO_DEFAULT}"
-  MGMT_TOPO="${3:-$MGMT_TOPO_DEFAULT}"
-else
-  FABRIC_TOPO="${1:-$FABRIC_TOPO_DEFAULT}"
-  MGMT_TOPO="${2:-$MGMT_TOPO_DEFAULT}"
-  ACTION="deploy"
-fi
+usage() {
+  echo "Usage:"
+  echo "  $0 [fabric_topology.yaml] [mgmt_topology.yaml]"
+  echo "  $0 -r|-rf|-rm [fabric_topology.yaml] [mgmt_topology.yaml]"
+  echo "  $0 destroy [fabric_topology.yaml] [mgmt_topology.yaml]"
+}
+
+# -----------------------------
+# Parse args (order-independent)
+# -----------------------------
+POSITIONALS=()
+
+while (( "$#" )); do
+  case "$1" in
+    destroy)
+      ACTION="destroy"
+      shift
+      ;;
+    --reconfigure|-r)
+      RECONF_FABRIC=1
+      RECONF_MGMT=1
+      shift
+      ;;
+    --reconfigure-fabric|-rf)
+      RECONF_FABRIC=1
+      shift
+      ;;
+    --reconfigure-mgmt|-rm)
+      RECONF_MGMT=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option: $1"
+      usage
+      exit 1
+      ;;
+    *)
+      POSITIONALS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+FABRIC_TOPO="${POSITIONALS[0]:-$FABRIC_TOPO_DEFAULT}"
+MGMT_TOPO="${POSITIONALS[1]:-$MGMT_TOPO_DEFAULT}"
 
 # Lab names must match the 'name:' field in each topology
 FABRIC_LAB_NAME="${FABRIC_LAB_NAME:-arista-evpn-vxlan-fabric}"
 MGMT_LAB_NAME="${MGMT_LAB_NAME:-arista-evpn-vxlan-mgmt}"
 
-# Node filters (only used if you want to further split stages; currently deploy whole files)
+# Node filters (only used for logging)
 FABRIC_NODES="${FABRIC_NODES:-spine1,spine2,leaf1,leaf2,leaf3,leaf4,host1,host2}"
-# Mgmt nodes for info/logging only
 MGMT_NODES="${MGMT_NODES:-gnmic,prometheus,grafana,alloy,loki,redis,ntopng}"
 
 # EVPN check containers (fabric lab)
@@ -53,10 +96,9 @@ EVPN_CHECK_CONTAINERS=(
 MAX_WAIT="${MAX_WAIT:-300}"
 POLL_INT="${POLL_INT:-10}"
 
-# Tap bridge for ntopng sniffing actual fabric traffic (host Linux bridge)
+# Tap bridge (left here in case you still use it elsewhere; not called)
 TAP_BRIDGE="${TAP_BRIDGE:-br-fabric-tap}"
-# Set SKIP_TAP_BRIDGE=1 if you manage the bridge yourself
-SKIP_TAP_BRIDGE="${SKIP_TAP_BRIDGE:-0}"
+SKIP_TAP_BRIDGE="${SKIP_TAP_BRIDGE:-1}"
 
 # ---- Colors (disable with NO_COLOR=1) ----
 if [[ "${NO_COLOR:-0}" == "1" ]] || [[ ! -t 1 ]]; then
@@ -83,13 +125,12 @@ status_tag() {
 }
 
 # ------------------------------------------------------------------------------
-# EVPN totals (FIXED):
+# EVPN totals:
 # - Works with EOS summary with OR without "Description" column
 # - Optional timeout wrapper to avoid a stuck docker exec hanging the loop
 # ------------------------------------------------------------------------------
 evpn_totals() {
   local c="$1"
-
   local cmd=(docker exec "$c" Cli -c "show bgp evpn summary")
 
   if command -v timeout >/dev/null 2>&1; then
@@ -127,19 +168,19 @@ evpn_totals() {
   fi
 }
 
-# Make totals read non-fatal under `set -e` and always set TOTAL/BAD
+# Make totals read non-fatal under `set -e` and always set TOTAL_NEI/BAD_NEI
 safe_read_totals() {
   local c="$1"
-  TOTAL=0
-  BAD=999
+  TOTAL_NEI=0
+  BAD_NEI=999
 
-  if ! read -r TOTAL BAD < <(evpn_totals "$c" 2>/dev/null || printf "0 999\n"); then
-    TOTAL=0
-    BAD=999
+  if ! read -r TOTAL_NEI BAD_NEI < <(evpn_totals "$c" 2>/dev/null || printf "0 999\n"); then
+    TOTAL_NEI=0
+    BAD_NEI=999
   fi
 
-  [[ "${TOTAL}" =~ ^[0-9]+$ ]] || TOTAL=0
-  [[ "${BAD}"   =~ ^[0-9]+$ ]] || BAD=999
+  [[ "${TOTAL_NEI}" =~ ^[0-9]+$ ]] || TOTAL_NEI=0
+  [[ "${BAD_NEI}"   =~ ^[0-9]+$ ]] || BAD_NEI=999
 }
 
 # Build ASCII progress bar
@@ -155,8 +196,7 @@ render_bar() {
   local filled=$(( pct * width / 100 ))
   local empty=$(( width - filled ))
 
-  local bar=""
-  local i
+  local bar="" i
   for ((i=0; i<filled; i++)); do bar+="#"; done
   for ((i=0; i<empty;  i++)); do bar+="-"; done
 
@@ -200,6 +240,7 @@ ensure_network() {
   fi
 }
 
+# (Unused now, left for reference)
 ensure_tap_bridge() {
   if [[ "$SKIP_TAP_BRIDGE" == "1" ]]; then
     echo "${C_DIM}[$(ts)] SKIP_TAP_BRIDGE=1 set; not creating ${TAP_BRIDGE}${C_RESET}"
@@ -244,6 +285,37 @@ destroy_labs() {
 }
 
 deploy_labs() {
+  ensure_network
+
+  local FABRIC_ARGS=()
+  local MGMT_ARGS=()
+  [[ "$RECONF_FABRIC" == "1" ]] && FABRIC_ARGS+=(--reconfigure)
+  [[ "$RECONF_MGMT"   == "1" ]] && MGMT_ARGS+=(--reconfigure)
+
+  # -------------------------
+  # FAST PATHS (no EVPN wait)
+  # -------------------------
+  if [[ "$RECONF_FABRIC" == "1" && "$RECONF_MGMT" == "0" ]]; then
+    echo
+    echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Reconfigure ONLY fabric lab (skipping EVPN wait + mgmt deploy)${C_RESET}"
+    echo "${C_DIM}[$(ts)] Fabric topo : ${FABRIC_TOPO}${C_RESET}"
+    clab deploy -t "${FABRIC_TOPO}" "${FABRIC_ARGS[@]}"
+    echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ Fabric reconfigure complete${C_RESET}"
+    return 0
+  fi
+
+  if [[ "$RECONF_FABRIC" == "0" && "$RECONF_MGMT" == "1" ]]; then
+    echo
+    echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Reconfigure ONLY mgmt lab (skipping fabric deploy + EVPN wait)${C_RESET}"
+    echo "${C_DIM}[$(ts)] Mgmt topo : ${MGMT_TOPO}${C_RESET}"
+    clab deploy -t "${MGMT_TOPO}" "${MGMT_ARGS[@]}"
+    echo "${C_GREEN}${C_BOLD}[$(ts)] ✔ Mgmt reconfigure complete${C_RESET}"
+    return 0
+  fi
+
+  # -------------------------
+  # Normal staged deploy flow
+  # -------------------------
   echo
   echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
   echo "${C_CYAN}${C_BOLD}[$(ts)] STAGED CONTAINERLAB DEPLOY (2 labs)${C_RESET}"
@@ -251,15 +323,13 @@ deploy_labs() {
   echo "${C_DIM}[$(ts)] Mgmt topo   : ${MGMT_TOPO}${C_RESET}"
   echo "${C_DIM}[$(ts)] Fabric name : ${FABRIC_LAB_NAME}${C_RESET}"
   echo "${C_DIM}[$(ts)] Mgmt name   : ${MGMT_LAB_NAME}${C_RESET}"
+  echo "${C_DIM}[$(ts)] Reconf      : fabric=${RECONF_FABRIC} mgmt=${RECONF_MGMT}${C_RESET}"
   echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
   echo
 
-  ensure_network
-  ensure_tap_bridge
-
   echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Stage 1: Deploying fabric lab${C_RESET}"
   echo "${C_DIM}[$(ts)]   (Nodes include: ${FABRIC_NODES})${C_RESET}"
-  clab deploy -t "${FABRIC_TOPO}"
+  clab deploy -t "${FABRIC_TOPO}" "${FABRIC_ARGS[@]}"
 
   echo
   echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Waiting for EVPN BGP to establish${C_RESET}"
@@ -267,6 +337,7 @@ deploy_labs() {
   echo "${C_DIM}[$(ts)]   Poll every: ${POLL_INT}s | Timeout: ${MAX_WAIT}s${C_RESET}"
   echo
 
+  local START_TS NOW ELAPSED ITER READY_DEVICES TOTAL_DEVICES
   START_TS=$(date +%s)
   ITER=1
   TOTAL_DEVICES="${#EVPN_CHECK_CONTAINERS[@]}"
@@ -276,7 +347,7 @@ deploy_labs() {
     ELAPSED=$(( NOW - START_TS ))
 
     READY_DEVICES=0
-    ALL_READY=true
+    local ALL_READY=true
 
     echo "${C_CYAN}${C_BOLD}[$(ts)] ── Poll #${ITER}${C_RESET}"
     printf "    %-45s %-10s %-20s\n" "NODE" "STATUS" "DETAILS"
@@ -291,15 +362,15 @@ deploy_labs() {
 
       safe_read_totals "$c"
 
-      if [[ "$TOTAL" -lt 1 ]]; then
+      if [[ "$TOTAL_NEI" -lt 1 ]]; then
         printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "no EVPN neighbors"
         ALL_READY=false
-      elif [[ "$BAD" -gt 0 ]]; then
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "$BAD/$TOTAL not Estab"
+      elif [[ "$BAD_NEI" -gt 0 ]]; then
+        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag WAIT)" "$BAD_NEI/$TOTAL_NEI not Estab"
         ALL_READY=false
       else
-        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag READY)" "$TOTAL neighbors"
-        ((++READY_DEVICES))   # IMPORTANT: prefix increment so it never trips `set -e`
+        printf "    %-45s %-10b %-20s\n" "$c" "$(status_tag READY)" "$TOTAL_NEI neighbors"
+        ((++READY_DEVICES))   # prefix increment avoids `set -e` surprises
       fi
     done
 
@@ -325,7 +396,7 @@ deploy_labs() {
   echo
   echo "${C_CYAN}${C_BOLD}[$(ts)] ▶ Stage 2: Deploying management lab${C_RESET}"
   echo "${C_DIM}[$(ts)]   (Nodes include: ${MGMT_NODES})${C_RESET}"
-  clab deploy -t "${MGMT_TOPO}"
+  clab deploy -t "${MGMT_TOPO}" "${MGMT_ARGS[@]}"
 
   echo
   echo "${C_CYAN}${C_BOLD}============================================================${C_RESET}"
@@ -342,9 +413,7 @@ case "${ACTION}" in
     destroy_labs
     ;;
   *)
-    echo "Usage:"
-    echo "  $0 [fabric_topology.yaml] [mgmt_topology.yaml]"
-    echo "  $0 destroy [fabric_topology.yaml] [mgmt_topology.yaml]"
+    usage
     exit 1
     ;;
 esac

@@ -70,23 +70,3 @@ topology:
       mgmt-ipv4: 172.20.20.218
       binds:
         - ./persist/redis:/data
-
-    ntopng:
-      kind: linux
-      image: ntop/ntopng:latest
-      mgmt-ipv4: 172.20.20.219
-      cmd: >
-        /bin/sh -lc
-        'exec ntopng --community --redis redis -i eth1 --disable-autologout'
-      binds:
-        - ./persist/ntopng:/var/lib/ntopng
-      ports:
-        - 3001:3000
-
-    # Same host Linux bridge as fabric lab
-    br-fabric-tap:
-      kind: bridge
-
-  links:
-    # ntopng sniffs mirrored fabric traffic
-    - endpoints: ["ntopng:eth1", "br-fabric-tap:ntopeth1"]
