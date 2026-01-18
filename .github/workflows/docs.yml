@@ -1,4 +1,4 @@
-name: Docs (MkDocs + mike)
+name: Docs (MkDocs + MySiteDocs)
 
 on:
   push:

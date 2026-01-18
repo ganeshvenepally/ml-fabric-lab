@@ -88,7 +88,7 @@ Key sections:
 ├── docs/                     # MkDocs documentation source
 ├── mkdocs.yml                # MkDocs configuration
 ├── requirements-docs.txt     # Docs build dependencies
-└── configs/                  # EOS, telemetry, and dashboard configs
+└── configs/                  # cEOS, telemetry, and dashboard configs
 ```
 
 ---
@@ -115,3 +115,9 @@ Key sections:
 
 This project is provided for lab, testing, and educational use.
 See individual component licenses for third-party tools.
+
+## Things I Need To Fix 
+
+- Change out Prometheus for Mirmir 
+- Fix bridge logic between fabrics for SPAN/TAP 
+- Update docker images and .yaml reference for ARM/INTEL cEOS images. So I can run the lab on either my Macbook(Intel) or Mac Mini (Arm)

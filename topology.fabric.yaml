@@ -6,7 +6,7 @@ mgmt:
 topology:
   kinds:
     arista_ceos:
-      image: ceos:4.35.1F
+      image: ceos64:4.35.1F
     linux:
       image: ghcr.io/hellt/network-multitool:latest
 
