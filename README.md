@@ -118,6 +118,6 @@ See individual component licenses for third-party tools.
 
 ## Things I Need To Fix 
 
-- Change out Prometheus for Mirmir 
+- Change out Prometheus for Mimir
 - Fix bridge logic between fabrics for SPAN/TAP 
 - Update docker images and .yaml reference for ARM/INTEL cEOS images. So I can run the lab on either my Macbook(Intel) or Mac Mini (Arm)
