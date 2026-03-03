@@ -1,0 +1,28 @@
+/* docs/styles/extra.css
+   Small tweaks to improve Mermaid rendering and code blocks.
+*/
+
+.mermaid {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Keep code blocks readable on narrow screens */
+pre code {
+  white-space: pre;
+}
+
+/* Slightly tighter tables on mobile */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+}
+
+/* Optional: make inline code pop a bit */
+code {
+  padding: 0.1em 0.25em;
+  border-radius: 4px;
+}
