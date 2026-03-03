@@ -1,0 +1,219 @@
+<mxfile host="app.diagrams.net" modified="2026-03-04T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="physical-connectivity" name="Physical Connectivity">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title1" value="ML Fabric Lab - Physical Connectivity" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="420" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="fabric_box" value="Fabric Lab&#xa;containerlab: arista-evpn-vxlan-fabric" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="1060" height="600" as="geometry"/>
+        </mxCell>
+        <mxCell id="mgmt_box" value="Management Lab&#xa;containerlab: arista-evpn-vxlan-mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="60" width="430" height="600" as="geometry"/>
+        </mxCell>
+        <mxCell id="mgmt_net" value="Shared Docker Mgmt Network&#xa;clab-mgmt (172.20.20.0/24)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="700" width="420" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="spine1" value="spine1&#xa;cEOS&#xa;172.20.20.11" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f4e78;fontColor=#ffffff;strokeColor=#0b2e4f;" vertex="1" parent="1">
+          <mxGeometry x="280" y="120" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="spine2" value="spine2&#xa;cEOS&#xa;172.20.20.12" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f4e78;fontColor=#ffffff;strokeColor=#0b2e4f;" vertex="1" parent="1">
+          <mxGeometry x="700" y="120" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="leaf1" value="leaf1&#xa;cEOS&#xa;172.20.20.21" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#134f5c;fontColor=#ffffff;strokeColor=#0c343d;" vertex="1" parent="1">
+          <mxGeometry x="120" y="330" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="leaf2" value="leaf2&#xa;cEOS&#xa;172.20.20.22" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#134f5c;fontColor=#ffffff;strokeColor=#0c343d;" vertex="1" parent="1">
+          <mxGeometry x="360" y="330" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="leaf3" value="leaf3&#xa;cEOS&#xa;172.20.20.23" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#134f5c;fontColor=#ffffff;strokeColor=#0c343d;" vertex="1" parent="1">
+          <mxGeometry x="600" y="330" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="leaf4" value="leaf4&#xa;cEOS&#xa;172.20.20.24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#134f5c;fontColor=#ffffff;strokeColor=#0c343d;" vertex="1" parent="1">
+          <mxGeometry x="840" y="330" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="host1" value="host1&#xa;Linux&#xa;192.168.10.101/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="80" y="520" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="host2" value="host2&#xa;Linux&#xa;192.168.10.102/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="820" y="520" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="ntopng_p" value="ntopng&#xa;Linux&#xa;eth1 data tap&#xa;172.20.20.219" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="900" y="500" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="gnmic_p" value="gnmic&#xa;172.20.20.213&#xa;:9804" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="120" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="mimir_p" value="mimir&#xa;172.20.20.214&#xa;:9009" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="120" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="grafana_p" value="grafana&#xa;172.20.20.215&#xa;:3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="280" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="alloy_p" value="alloy&#xa;172.20.20.216&#xa;:1514/:1515/:12345" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="280" width="120" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="loki_p" value="loki&#xa;172.20.20.217&#xa;:3100" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="470" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="redis_p" value="redis&#xa;172.20.20.218" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="470" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend1" value="Solid blue links = physical data-plane cabling&#xa;Dashed gold links = management network attachment&#xa;Orange link = SPAN / mirrored traffic feed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#999999;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="20" y="835" width="530" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="eth1 / eth1" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf1" target="spine1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="eth2 / eth1" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf1" target="spine2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="eth1 / eth3" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf2" target="spine1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="eth2 / eth3" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf2" target="spine2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="eth1 / eth5" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf3" target="spine1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="eth2 / eth5" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf3" target="spine2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="eth1 / eth7" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf4" target="spine1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="eth2 / eth7" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="leaf4" target="spine2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="eth1 / eth10" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="host1" target="leaf1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" value="eth1 / eth10" style="endArrow=none;html=1;strokeColor=#3d85c6;strokeWidth=2;" edge="1" parent="1" source="host2" target="leaf4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" value="SPAN eth5 / eth1" style="endArrow=none;html=1;strokeColor=#e69138;strokeWidth=3;" edge="1" parent="1" source="leaf1" target="ntopng_p">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m1" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="spine1" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m2" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="spine2" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m3" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="leaf1" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m4" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="leaf2" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m5" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="leaf3" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m6" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="leaf4" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m7" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="host1" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m8" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="host2" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m9" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="ntopng_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m10" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="gnmic_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m11" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="mimir_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m12" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="grafana_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m13" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="alloy_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m14" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="loki_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="m15" value="" style="endArrow=none;dashed=1;dashPattern=8 8;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1" source="redis_p" target="mgmt_net">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="logical-connectivity" name="Logical Connectivity">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title2" value="ML Fabric Lab - Logical Connectivity / Data Flows" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="520" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="fabric_l" value="EVPN / VXLAN Fabric&#xa;2 spines + 4 leafs&#xa;Underlay: eBGP IPv4 unicast&#xa;Overlay: EVPN over BGP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="260" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="hosts_l" value="Hosts / Tenant Endpoints&#xa;host1 192.168.10.101&#xa;host2 192.168.10.102&#xa;VLAN 10 / VNI 10010&#xa;GW 192.168.10.1 (VARP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="420" width="260" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="gnmic_l" value="gnmic&#xa;gNMI collector&#xa;Subscribes to OpenConfig&#xa;Exports Prometheus metrics on :9804" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="500" y="90" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="alloy_l" value="Alloy&#xa;Scrapes gnmic metrics&#xa;Receives syslog on :1514/:1515&#xa;Relabels and forwards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="500" y="300" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="mimir_l" value="Mimir&#xa;Metrics store&#xa;Prometheus-compatible query API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="900" y="120" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="loki_l" value="Loki&#xa;Log store&#xa;Receives logs from Alloy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="900" y="330" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="grafana_l" value="Grafana&#xa;Operator UI&#xa;Queries Mimir + Loki&#xa;Dashboards and Explore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="225" width="230" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="ntopng_l" value="ntopng&#xa;Traffic / flow analysis UI&#xa;Receives mirrored packets from leaf1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce5cd;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="500" y="540" width="240" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="redis_l" value="Redis&#xa;ntopng backend state/cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="900" y="560" width="220" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="ops_notes" value="Primary workflows&#xa;1. CLI validates network truth&#xa;2. gnmic exports structured telemetry&#xa;3. Alloy routes telemetry and logs&#xa;4. Grafana visualizes metrics + logs&#xa;5. ntopng shows actual traffic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#999999;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="520" width="300" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="l1" value="Data plane traffic&#xa;ICMP / iperf / tenant flows" style="endArrow=block;html=1;strokeColor=#3d85c6;strokeWidth=3;" edge="1" parent="1" source="hosts_l" target="fabric_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l2" value="gNMI subscriptions&#xa;BGP state / counters" style="endArrow=block;html=1;strokeColor=#6aa84f;strokeWidth=3;" edge="1" parent="1" source="fabric_l" target="gnmic_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l3" value="Prometheus scrape&#xa;http://gnmic:9804/metrics" style="endArrow=block;html=1;strokeColor=#6aa84f;strokeWidth=3;" edge="1" parent="1" source="gnmic_l" target="alloy_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l4" value="Remote write&#xa;/api/v1/push" style="endArrow=block;html=1;strokeColor=#b45f06;strokeWidth=3;" edge="1" parent="1" source="alloy_l" target="mimir_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l5" value="Prometheus datasource queries" style="endArrow=block;html=1;strokeColor=#b45f06;strokeWidth=3;" edge="1" parent="1" source="mimir_l" target="grafana_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l6" value="Syslog RFC5424 / RFC3164" style="endArrow=block;html=1;strokeColor=#cc0000;strokeWidth=3;" edge="1" parent="1" source="fabric_l" target="alloy_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l7" value="Log push&#xa;/loki/api/v1/push" style="endArrow=block;html=1;strokeColor=#cc0000;strokeWidth=3;" edge="1" parent="1" source="alloy_l" target="loki_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l8" value="Loki datasource queries" style="endArrow=block;html=1;strokeColor=#cc0000;strokeWidth=3;" edge="1" parent="1" source="loki_l" target="grafana_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l9" value="SPAN / mirrored packets" style="endArrow=block;html=1;strokeColor=#e69138;strokeWidth=3;" edge="1" parent="1" source="fabric_l" target="ntopng_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="l10" value="State / cache" style="endArrow=block;html=1;strokeColor=#d6b656;strokeWidth=3;" edge="1" parent="1" source="ntopng_l" target="redis_l">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
