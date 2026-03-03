@@ -30,7 +30,7 @@ topology:
   kinds:
     # Arista cEOS for spines/leafs
     arista_ceos:
-      image: ceos:4.35.1F
+      image: ceos:4.35.2F
 
     # Linux utility image including ping, ip, tcpdump, iperf3, etc.
     linux:

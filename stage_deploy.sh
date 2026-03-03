@@ -21,6 +21,9 @@ ACTION="deploy"
 RECONF_FABRIC=0
 RECONF_MGMT=0
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ORIG_PWD="$(pwd)"
+
 # Default topology files (override by args)
 FABRIC_TOPO_DEFAULT="topology.fabric.yaml"
 MGMT_TOPO_DEFAULT="topology.mgmt.yaml"
@@ -30,6 +33,15 @@ usage() {
   echo "  $0 [fabric_topology.yaml] [mgmt_topology.yaml]"
   echo "  $0 -r|-rf|-rm [fabric_topology.yaml] [mgmt_topology.yaml]"
   echo "  $0 destroy [fabric_topology.yaml] [mgmt_topology.yaml]"
+}
+
+resolve_user_path() {
+  local path="$1"
+  if [[ "$path" = /* ]]; then
+    printf "%s\n" "$path"
+  else
+    printf "%s/%s\n" "$ORIG_PWD" "$path"
+  fi
 }
 
 # -----------------------------
@@ -72,8 +84,19 @@ while (( "$#" )); do
   esac
 done
 
-FABRIC_TOPO="${POSITIONALS[0]:-$FABRIC_TOPO_DEFAULT}"
-MGMT_TOPO="${POSITIONALS[1]:-$MGMT_TOPO_DEFAULT}"
+if [[ ${#POSITIONALS[@]} -ge 1 ]]; then
+  FABRIC_TOPO="$(resolve_user_path "${POSITIONALS[0]}")"
+else
+  FABRIC_TOPO="${SCRIPT_DIR}/${FABRIC_TOPO_DEFAULT}"
+fi
+
+if [[ ${#POSITIONALS[@]} -ge 2 ]]; then
+  MGMT_TOPO="$(resolve_user_path "${POSITIONALS[1]}")"
+else
+  MGMT_TOPO="${SCRIPT_DIR}/${MGMT_TOPO_DEFAULT}"
+fi
+
+cd "${SCRIPT_DIR}"
 
 # Lab names must match the 'name:' field in each topology
 FABRIC_LAB_NAME="${FABRIC_LAB_NAME:-arista-evpn-vxlan-fabric}"
@@ -240,6 +263,18 @@ ensure_network() {
   fi
 }
 
+ensure_persist_dirs() {
+  local persist_dirs=(
+    "${SCRIPT_DIR}/persist/ntopng"
+    "${SCRIPT_DIR}/persist/mimir"
+    "${SCRIPT_DIR}/persist/grafana"
+    "${SCRIPT_DIR}/persist/loki"
+    "${SCRIPT_DIR}/persist/redis"
+  )
+
+  mkdir -p "${persist_dirs[@]}"
+}
+
 # (Unused now, left for reference)
 ensure_tap_bridge() {
   if [[ "$SKIP_TAP_BRIDGE" == "1" ]]; then
@@ -285,6 +320,7 @@ destroy_labs() {
 }
 
 deploy_labs() {
+  ensure_persist_dirs
   ensure_network
 
   local FABRIC_ARGS=()
