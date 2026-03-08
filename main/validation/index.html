@@ -1456,6 +1456,13 @@
 <li>endpoint forwarding</li>
 </ol>
 <p>Do not skip directly to <code>ping</code> and assume it tells you enough. It does not.</p>
+<pre class="mermaid"><code>flowchart TD
+  A["1. Interfaces and IP"] --&gt; B["2. Underlay routing"]
+  B --&gt; C["3. EVPN sessions"]
+  C --&gt; D["4. VNI and VTEP state"]
+  D --&gt; E["5. MAC/IP learning"]
+  E --&gt; F["6. End-to-end forwarding"]
+  F --&gt; G["7. Management-plane checks"]</code></pre>
 <h2 id="1-interface-and-ip-sanity">1. Interface and IP Sanity<a class="headerlink" href="#1-interface-and-ip-sanity" title="Permanent link">&para;</a></h2>
 <h3 id="on-a-leaf">On a leaf<a class="headerlink" href="#on-a-leaf" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show interfaces status&quot;</span>
@@ -1540,6 +1547,12 @@ docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </spa
 <li><code>host2</code> MAC learned remotely through VXLAN/EVPN</li>
 <li>ARP entries for both host IPs once traffic has occurred</li>
 </ul>
+<pre class="mermaid"><code>flowchart LR
+  H1["host1 sends traffic"] --&gt; L1["leaf1 learns source MAC on Ethernet10"]
+  L1 --&gt; T2["leaf1 originates EVPN Type-2"]
+  T2 --&gt; L4["leaf4 installs remote host1 entry"]
+  H2["host2 replies"] --&gt; R2["leaf4 originates reciprocal Type-2"]
+  R2 --&gt; L1R["leaf1 installs remote host2 entry"]</code></pre>
 <h2 id="6-evpn-type-2-macip-advertisement">6. EVPN Type-2 MAC/IP Advertisement<a class="headerlink" href="#6-evpn-type-2-macip-advertisement" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type mac-ip&quot;</span>
 docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type mac-ip&quot;</span>
@@ -1564,6 +1577,11 @@ docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </spa
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>iperf3<span class="w"> </span>-c<span class="w"> </span><span class="m">192</span>.168.10.102<span class="w"> </span>-P<span class="w"> </span><span class="m">4</span><span class="w"> </span>-t<span class="w"> </span><span class="m">20</span>
 </code></pre></div>
 <p>This confirms the data plane is stable under more than a single ICMP flow.</p>
+<pre class="mermaid"><code>flowchart LR
+  PING["ping host1 -&gt; host2"] --&gt; BASIC["basic reachability"]
+  BASIC --&gt; MTU["path MTU test"]
+  MTU --&gt; PERF["iperf3 throughput test"]
+  PERF --&gt; CONF["data plane confidence"]</code></pre>
 <h2 id="8-gateway-validation">8. Gateway Validation<a class="headerlink" href="#8-gateway-validation" title="Permanent link">&para;</a></h2>
 <p>On <code>host1</code>:</p>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>neigh<span class="w"> </span>show

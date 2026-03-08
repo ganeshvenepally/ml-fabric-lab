@@ -1089,6 +1089,15 @@
 <li>deploy the management topology</li>
 </ol>
 <p>That split is operationally useful because it prevents the management stack from starting before the network itself is stable.</p>
+<pre class="mermaid"><code>flowchart TD
+  A["Run ./stage_deploy.sh"] --&gt; B["Create persist dirs"]
+  B --&gt; C["Ensure clab-mgmt exists"]
+  C --&gt; D["Deploy topology.fabric.yaml"]
+  D --&gt; E["Poll show bgp evpn summary on spines and leafs"]
+  E --&gt;|all peers Estab| F["Deploy topology.mgmt.yaml"]
+  E --&gt;|timeout| G["Log warning and continue"]
+  G --&gt; F
+  F --&gt; H["Lab ready for validation"]</code></pre>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>From the lab root:</p>
 <div class="highlight"><pre><span></span><code>./stage_deploy.sh
@@ -1113,6 +1122,11 @@
 <li><code>-rm</code>: reconfigure only the management topology</li>
 </ul>
 <p><code>-rf</code> and <code>-rm</code> skip the full staged wait logic.</p>
+<pre class="mermaid"><code>flowchart LR
+  R["-r"] --&gt; RB["reconfigure fabric"]
+  R --&gt; RM["reconfigure mgmt"]
+  RF["-rf"] --&gt; FONLY["fabric only\nno EVPN wait\nno mgmt deploy"]
+  RMF["-rm"] --&gt; MONLY["mgmt only\nno fabric deploy\nno EVPN wait"]</code></pre>
 <h2 id="evpn-readiness-logic">EVPN Readiness Logic<a class="headerlink" href="#evpn-readiness-logic" title="Permanent link">&para;</a></h2>
 <p>The deployment script checks these containers:</p>
 <ul>

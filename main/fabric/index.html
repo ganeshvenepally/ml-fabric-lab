@@ -445,6 +445,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#physical-and-logical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical And Logical Topology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#addressing-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -513,6 +524,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Tenant Service Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service View
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -911,6 +939,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#physical-and-logical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical And Logical Topology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#addressing-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -979,6 +1018,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Tenant Service Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service View
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1117,6 +1173,30 @@
 </tr>
 </tbody>
 </table>
+<h2 id="physical-and-logical-topology">Physical And Logical Topology<a class="headerlink" href="#physical-and-logical-topology" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TB
+  spine1["spine1\nAS 65000\nLo0 10.0.0.1"]
+  spine2["spine2\nAS 65000\nLo0 10.0.0.2"]
+
+  leaf1["leaf1\nAS 65101\nLo0 10.0.0.11\nLo1 10.0.1.11"]
+  leaf2["leaf2\nAS 65102\nLo0 10.0.0.12\nLo1 10.0.1.12"]
+  leaf3["leaf3\nAS 65103\nLo0 10.0.0.13\nLo1 10.0.1.13"]
+  leaf4["leaf4\nAS 65104\nLo0 10.0.0.14\nLo1 10.0.1.14"]
+
+  host1["host1\n192.168.10.101/24"]
+  host2["host2\n192.168.10.102/24"]
+
+  spine1 ---|"172.16.0.1/31 &lt;-&gt; 172.16.0.0/31"| leaf1
+  spine2 ---|"172.16.0.5/31 &lt;-&gt; 172.16.0.4/31"| leaf1
+  spine1 ---|"172.16.0.9/31 &lt;-&gt; 172.16.0.8/31"| leaf2
+  spine2 ---|"172.16.0.13/31 &lt;-&gt; 172.16.0.12/31"| leaf2
+  spine1 ---|"172.16.0.17/31 &lt;-&gt; 172.16.0.16/31"| leaf3
+  spine2 ---|"172.16.0.21/31 &lt;-&gt; 172.16.0.20/31"| leaf3
+  spine1 ---|"172.16.0.25/31 &lt;-&gt; 172.16.0.24/31"| leaf4
+  spine2 ---|"172.16.0.29/31 &lt;-&gt; 172.16.0.28/31"| leaf4
+
+  host1 ---|"VLAN 10"| leaf1
+  host2 ---|"VLAN 10"| leaf4</code></pre>
 <h2 id="addressing-plan">Addressing Plan<a class="headerlink" href="#addressing-plan" title="Permanent link">&para;</a></h2>
 <h3 id="management-network">Management Network<a class="headerlink" href="#management-network" title="Permanent link">&para;</a></h3>
 <p>All devices sit on the containerlab management network <code>clab-mgmt</code>.</p>
@@ -1368,6 +1448,20 @@
 </tbody>
 </table>
 <p>Only <code>leaf1</code> and <code>leaf4</code> instantiate the <code>Vlan10</code> SVI with <code>ip address virtual 192.168.10.1/24</code>. <code>leaf2</code> and <code>leaf3</code> still participate in the MAC-VRF and VNI, but they do not provide gateway function. That is a good choice for lab clarity because it separates "member of the broadcast domain" from "gateway participant."</p>
+<h3 id="service-view">Service View<a class="headerlink" href="#service-view" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+  h1["host1\n192.168.10.101"]
+  l1["leaf1\nVLAN 10\nVNI 10010\nVARP 192.168.10.1"]
+  l2["leaf2\nVLAN 10\nVNI 10010"]
+  l3["leaf3\nVLAN 10\nVNI 10010"]
+  l4["leaf4\nVLAN 10\nVNI 10010\nVARP 192.168.10.1"]
+  h2["host2\n192.168.10.102"]
+
+  h1 --&gt; l1
+  h2 --&gt; l4
+  l1 -. EVPN membership .- l2
+  l1 -. EVPN membership .- l3
+  l1 -. EVPN membership .- l4</code></pre>
 <h2 id="host-placement">Host Placement<a class="headerlink" href="#host-placement" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1405,6 +1499,14 @@
 <li>VXLAN encapsulation must use a reachable source/destination VTEP pair.</li>
 </ol>
 <p>If any of those conditions fail, the fabric breaks in a way that is usually easy to classify once you know which stage you are in.</p>
+<pre class="mermaid"><code>flowchart TD
+  A["Underlay BGP healthy"] --&gt; B["Loopback reachability exists"]
+  B --&gt; C["EVPN sessions establish"]
+  C --&gt; D["Type-3 IMET advertises VNI 10010 membership"]
+  D --&gt; E["Access leaf learns local host MAC/IP"]
+  E --&gt; F["Type-2 MAC/IP advertisement exported"]
+  F --&gt; G["Remote leaf installs endpoint to remote VTEP"]
+  G --&gt; H["VXLAN forwarding succeeds"]</code></pre>
 <h2 id="key-eos-constructs">Key EOS Constructs<a class="headerlink" href="#key-eos-constructs" title="Permanent link">&para;</a></h2>
 <p>The design hinges on a few EOS statements repeated across the configs:</p>
 <ul>
@@ -1423,10 +1525,15 @@
   host1["host1\n192.168.10.101"] --&gt; leaf1["leaf1\nVTEP 10.0.1.11"]
   host2["host2\n192.168.10.102"] --&gt; leaf4["leaf4\nVTEP 10.0.1.14"]
 
-  leaf1 &lt;-- eBGP IPv4 / EVPN --&gt; spine1["spine1\nAS 65000"]
-  leaf1 &lt;-- eBGP IPv4 / EVPN --&gt; spine2["spine2\nAS 65000"]
-  leaf4 &lt;-- eBGP IPv4 / EVPN --&gt; spine1
-  leaf4 &lt;-- eBGP IPv4 / EVPN --&gt; spine2</code></pre>
+  leaf1 --&gt;|"eBGP IPv4 + EVPN"| spine1["spine1\nAS 65000"]
+  spine1 --&gt;|"eBGP IPv4 + EVPN"| leaf1
+  leaf1 --&gt;|"eBGP IPv4 + EVPN"| spine2["spine2\nAS 65000"]
+  spine2 --&gt;|"eBGP IPv4 + EVPN"| leaf1
+
+  leaf4 --&gt;|"eBGP IPv4 + EVPN"| spine1
+  spine1 --&gt;|"eBGP IPv4 + EVPN"| leaf4
+  leaf4 --&gt;|"eBGP IPv4 + EVPN"| spine2
+  spine2 --&gt;|"eBGP IPv4 + EVPN"| leaf4</code></pre>
 <h2 id="repository-layout-notes">Repository Layout Notes<a class="headerlink" href="#repository-layout-notes" title="Permanent link">&para;</a></h2>
 <p>The fabric definition in <code>topology.fabric.yaml</code> is the cleanest source for understanding the core VXLAN/EVPN network. The older <code>ml-clab-topo.yml</code> includes additional telemetry and packet-analysis services inline and is still worth reading if you want the original all-in-one operational intent.</p>
 
