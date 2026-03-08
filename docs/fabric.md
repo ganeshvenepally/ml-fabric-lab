@@ -15,6 +15,34 @@ This page describes the exact VXLAN/EVPN fabric built in `topology.fabric.yaml` 
 | `host1` | endpoint | static Linux config | traffic source |
 | `host2` | endpoint | static Linux config | traffic sink / `iperf3` server |
 
+## Physical And Logical Topology
+
+```mermaid
+flowchart TB
+  spine1["spine1\nAS 65000\nLo0 10.0.0.1"]
+  spine2["spine2\nAS 65000\nLo0 10.0.0.2"]
+
+  leaf1["leaf1\nAS 65101\nLo0 10.0.0.11\nLo1 10.0.1.11"]
+  leaf2["leaf2\nAS 65102\nLo0 10.0.0.12\nLo1 10.0.1.12"]
+  leaf3["leaf3\nAS 65103\nLo0 10.0.0.13\nLo1 10.0.1.13"]
+  leaf4["leaf4\nAS 65104\nLo0 10.0.0.14\nLo1 10.0.1.14"]
+
+  host1["host1\n192.168.10.101/24"]
+  host2["host2\n192.168.10.102/24"]
+
+  spine1 ---|"172.16.0.1/31 <-> 172.16.0.0/31"| leaf1
+  spine2 ---|"172.16.0.5/31 <-> 172.16.0.4/31"| leaf1
+  spine1 ---|"172.16.0.9/31 <-> 172.16.0.8/31"| leaf2
+  spine2 ---|"172.16.0.13/31 <-> 172.16.0.12/31"| leaf2
+  spine1 ---|"172.16.0.17/31 <-> 172.16.0.16/31"| leaf3
+  spine2 ---|"172.16.0.21/31 <-> 172.16.0.20/31"| leaf3
+  spine1 ---|"172.16.0.25/31 <-> 172.16.0.24/31"| leaf4
+  spine2 ---|"172.16.0.29/31 <-> 172.16.0.28/31"| leaf4
+
+  host1 ---|"VLAN 10"| leaf1
+  host2 ---|"VLAN 10"| leaf4
+```
+
 ## Addressing Plan
 
 ### Management Network
@@ -105,6 +133,24 @@ Per-leaf route distinguishers are unique:
 
 Only `leaf1` and `leaf4` instantiate the `Vlan10` SVI with `ip address virtual 192.168.10.1/24`. `leaf2` and `leaf3` still participate in the MAC-VRF and VNI, but they do not provide gateway function. That is a good choice for lab clarity because it separates "member of the broadcast domain" from "gateway participant."
 
+### Service View
+
+```mermaid
+flowchart LR
+  h1["host1\n192.168.10.101"]
+  l1["leaf1\nVLAN 10\nVNI 10010\nVARP 192.168.10.1"]
+  l2["leaf2\nVLAN 10\nVNI 10010"]
+  l3["leaf3\nVLAN 10\nVNI 10010"]
+  l4["leaf4\nVLAN 10\nVNI 10010\nVARP 192.168.10.1"]
+  h2["host2\n192.168.10.102"]
+
+  h1 --> l1
+  h2 --> l4
+  l1 -. EVPN membership .- l2
+  l1 -. EVPN membership .- l3
+  l1 -. EVPN membership .- l4
+```
+
 ## Host Placement
 
 | Host | Attachment | Data IP | Default Gateway |
@@ -126,6 +172,17 @@ The forwarding dependency chain is:
 6. VXLAN encapsulation must use a reachable source/destination VTEP pair.
 
 If any of those conditions fail, the fabric breaks in a way that is usually easy to classify once you know which stage you are in.
+
+```mermaid
+flowchart TD
+  A["Underlay BGP healthy"] --> B["Loopback reachability exists"]
+  B --> C["EVPN sessions establish"]
+  C --> D["Type-3 IMET advertises VNI 10010 membership"]
+  D --> E["Access leaf learns local host MAC/IP"]
+  E --> F["Type-2 MAC/IP advertisement exported"]
+  F --> G["Remote leaf installs endpoint to remote VTEP"]
+  G --> H["VXLAN forwarding succeeds"]
+```
 
 ## Key EOS Constructs
 
@@ -149,10 +206,15 @@ flowchart LR
   host1["host1\n192.168.10.101"] --> leaf1["leaf1\nVTEP 10.0.1.11"]
   host2["host2\n192.168.10.102"] --> leaf4["leaf4\nVTEP 10.0.1.14"]
 
-  leaf1 <-- eBGP IPv4 / EVPN --> spine1["spine1\nAS 65000"]
-  leaf1 <-- eBGP IPv4 / EVPN --> spine2["spine2\nAS 65000"]
-  leaf4 <-- eBGP IPv4 / EVPN --> spine1
-  leaf4 <-- eBGP IPv4 / EVPN --> spine2
+  leaf1 -->|"eBGP IPv4 + EVPN"| spine1["spine1\nAS 65000"]
+  spine1 -->|"eBGP IPv4 + EVPN"| leaf1
+  leaf1 -->|"eBGP IPv4 + EVPN"| spine2["spine2\nAS 65000"]
+  spine2 -->|"eBGP IPv4 + EVPN"| leaf1
+
+  leaf4 -->|"eBGP IPv4 + EVPN"| spine1
+  spine1 -->|"eBGP IPv4 + EVPN"| leaf4
+  leaf4 -->|"eBGP IPv4 + EVPN"| spine2
+  spine2 -->|"eBGP IPv4 + EVPN"| leaf4
 ```
 
 ## Repository Layout Notes

@@ -55,6 +55,18 @@ That is enough for:
 - overlay BGP sessions to the spine loopbacks
 - VTEP source reachability between leafs
 
+```mermaid
+flowchart TB
+  subgraph Control["Control-plane layering"]
+    U["Underlay\nIPv4 eBGP\nCarries Lo0 and Lo1 reachability"]
+    O["Overlay\nBGP EVPN over Lo0 peering"]
+    D["Data plane\nVXLAN sourced from Lo1"]
+  end
+
+  U --> O
+  O --> D
+```
+
 ## Overlay Peering Model
 
 The overlay neighbors are:
@@ -100,6 +112,13 @@ Each leaf does all of the edge work:
 On `leaf1` and `leaf4`, the leaf also provides first-hop gateway services through VARP.
 
 ## Route Types That Matter In This Lab
+
+```mermaid
+flowchart LR
+  T3["Type-3 IMET\n'I participate in VNI 10010'"] --> FAB["Fabric knows VTEP membership"]
+  T2["Type-2 MAC/IP\n'Host MAC/IP is behind me'"] --> EP["Fabric knows endpoint location"]
+  T5["Type-5 IP Prefix\nNot used in this lab"] --> NA["Out of current scope"]
+```
 
 ### Type-2 MAC/IP Advertisement
 
@@ -155,6 +174,21 @@ Why it matters:
 
 In this exact lab, only `leaf1` and `leaf4` need the SVI because only those two leaves have host-facing ports. `leaf2` and `leaf3` remain pure transit VTEPs for the L2VNI.
 
+```mermaid
+sequenceDiagram
+  autonumber
+  participant H1 as host1
+  participant L1 as leaf1
+  participant H2 as host2
+  participant L4 as leaf4
+
+  H1->>L1: ARP for 192.168.10.1
+  L1-->>H1: Reply with VARP MAC 00:1c:73:00:00:10
+  H2->>L4: ARP for 192.168.10.1
+  L4-->>H2: Reply with same VARP MAC
+  Note over H1,L4: Both hosts see a local default gateway identity
+```
+
 ## End-to-End Control-Plane Sequence
 
 ```mermaid
@@ -200,6 +234,23 @@ Once the control plane has converged, forwarding from `host1` to `host2` is:
 5. `leaf4` decapsulates and emits the original frame toward `host2`
 
 The important point is that the spines forward only the outer IP packet. They are not aware of tenant MAC tables.
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant H1 as host1
+  participant L1 as leaf1
+  participant S1 as spine1/spine2
+  participant L4 as leaf4
+  participant H2 as host2
+
+  H1->>L1: Ethernet frame destined to host2
+  L1->>L1: Lookup remote MAC in VNI 10010
+  L1->>S1: Outer IP + UDP/4789 VXLAN packet
+  S1->>L4: Route on outer IP only
+  L4->>L4: Decapsulate VXLAN frame
+  L4->>H2: Deliver original Ethernet frame
+```
 
 ## Why This Lab Is Good For Deep Validation
 

@@ -14,6 +14,16 @@ Treat the fabric as five layers:
 
 Do not skip directly to `ping` and assume it tells you enough. It does not.
 
+```mermaid
+flowchart TD
+  A["1. Interfaces and IP"] --> B["2. Underlay routing"]
+  B --> C["3. EVPN sessions"]
+  C --> D["4. VNI and VTEP state"]
+  D --> E["5. MAC/IP learning"]
+  E --> F["6. End-to-end forwarding"]
+  F --> G["7. Management-plane checks"]
+```
+
 ## 1. Interface and IP Sanity
 
 ### On a leaf
@@ -131,6 +141,15 @@ What you want on `leaf1`:
 - `host2` MAC learned remotely through VXLAN/EVPN
 - ARP entries for both host IPs once traffic has occurred
 
+```mermaid
+flowchart LR
+  H1["host1 sends traffic"] --> L1["leaf1 learns source MAC on Ethernet10"]
+  L1 --> T2["leaf1 originates EVPN Type-2"]
+  T2 --> L4["leaf4 installs remote host1 entry"]
+  H2["host2 replies"] --> R2["leaf4 originates reciprocal Type-2"]
+  R2 --> L1R["leaf1 installs remote host2 entry"]
+```
+
 ## 6. EVPN Type-2 MAC/IP Advertisement
 
 ```bash
@@ -170,6 +189,14 @@ docker exec clab-arista-evpn-vxlan-fabric-host1 iperf3 -c 192.168.10.102 -P 4 -t
 ```
 
 This confirms the data plane is stable under more than a single ICMP flow.
+
+```mermaid
+flowchart LR
+  PING["ping host1 -> host2"] --> BASIC["basic reachability"]
+  BASIC --> MTU["path MTU test"]
+  MTU --> PERF["iperf3 throughput test"]
+  PERF --> CONF["data plane confidence"]
+```
 
 ## 8. Gateway Validation
 

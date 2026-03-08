@@ -16,6 +16,18 @@ Default behavior:
 
 That split is operationally useful because it prevents the management stack from starting before the network itself is stable.
 
+```mermaid
+flowchart TD
+  A["Run ./stage_deploy.sh"] --> B["Create persist dirs"]
+  B --> C["Ensure clab-mgmt exists"]
+  C --> D["Deploy topology.fabric.yaml"]
+  D --> E["Poll show bgp evpn summary on spines and leafs"]
+  E -->|all peers Estab| F["Deploy topology.mgmt.yaml"]
+  E -->|timeout| G["Log warning and continue"]
+  G --> F
+  F --> H["Lab ready for validation"]
+```
+
 ## Deploy
 
 From the lab root:
@@ -55,6 +67,14 @@ Meaning:
 - `-rm`: reconfigure only the management topology
 
 `-rf` and `-rm` skip the full staged wait logic.
+
+```mermaid
+flowchart LR
+  R["-r"] --> RB["reconfigure fabric"]
+  R --> RM["reconfigure mgmt"]
+  RF["-rf"] --> FONLY["fabric only\nno EVPN wait\nno mgmt deploy"]
+  RMF["-rm"] --> MONLY["mgmt only\nno fabric deploy\nno EVPN wait"]
+```
 
 ## EVPN Readiness Logic
 
