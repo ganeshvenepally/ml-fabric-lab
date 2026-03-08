@@ -1,206 +1,237 @@
-# EVPN Control Plane (Deep Dive)
+# EVPN Control Plane
 
-This document provides a **complete, self-contained explanation** of the EVPN/VXLAN
-control plane used in this lab. It is intended to be readable on its own and suitable
-for publication via MkDocs or GitHub Pages.
+This page explains the VXLAN/EVPN technology used in the lab and maps it back to the actual EOS configuration choices in this repository.
 
----
+## Technology Stack
 
-## Scope of This Document
+The fabric is built from three layers that must all work together:
 
-This lab implements:
-- eBGP underlay (IPv4 unicast)
-- EVPN overlay (AFI/SAFI EVPN)
-- VXLAN data plane
-- Spine-based EVPN route-server design
+1. Underlay IP reachability
+2. EVPN control plane
+3. VXLAN encapsulated data plane
 
-The sequence below matches what you will observe on Arista EOS using
-`show bgp`, `show vxlan`, and related commands.
+If you are debugging, never collapse those layers into one mental model. In this lab:
 
----
+- Underlay is IPv4 eBGP over routed point-to-point links.
+- Overlay is BGP EVPN over loopback peering.
+- Data plane is VXLAN sourced from `Loopback1`.
 
-## High-Level Control Plane Flow
+## Why EVPN Instead of Flood-and-Learn VXLAN
 
-1. Physical links come up
-2. Underlay eBGP sessions establish
-3. EVPN address-family sessions establish
-4. VTEPs advertise VNIs (Type-3)
-5. Hosts trigger MAC/IP advertisements (Type-2)
-6. Data plane forwarding begins using VXLAN
+Pure data-plane VXLAN flood-and-learn can move frames, but it has bad operational properties:
 
----
+- remote MAC discovery depends on flooding
+- unknown unicast handling is noisier
+- control-plane visibility is weaker
+- troubleshooting is less deterministic
 
-## 1. Underlay eBGP Session Establishment
+EVPN fixes that by carrying MAC/IP reachability in BGP. In this lab, the result is:
 
-The underlay provides IP reachability between VTEPs.
+- deterministic remote MAC/IP learning
+- explicit VNI membership signaling
+- clear observability through `show bgp evpn ...`
+- a control plane you can inspect before user traffic ever crosses the fabric
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant L as Leaf (e.g. leaf1)
-  participant S as Spine (e.g. spine1)
+## Underlay Model
 
-  Note over L,S: Ethernet interface is UP, IP configured
-  L->>S: TCP SYN (port 179)
-  S-->>L: TCP SYN/ACK
-  L->>S: TCP ACK
-  L->>S: BGP OPEN (ASN, router-id, capabilities)
-  S-->>L: BGP OPEN
-  L->>S: BGP KEEPALIVE
-  S-->>L: BGP KEEPALIVE
-  Note over L,S: Underlay BGP session = Established
-  L->>S: UPDATE (IPv4 unicast routes: loopbacks, P2P)
-  S-->>L: UPDATE (IPv4 unicast routes)
+The underlay is simple on purpose:
+
+- every leaf has two routed uplinks, one to each spine
+- no L2 adjacency in the fabric core
+- no STP dependency in the spine-leaf domain
+- no IGP, only eBGP
+
+Each leaf advertises:
+
+- `Loopback0`
+- `Loopback1`
+
+Each spine advertises:
+
+- its own `Loopback0`
+
+That is enough for:
+
+- overlay BGP sessions to the spine loopbacks
+- VTEP source reachability between leafs
+
+## Overlay Peering Model
+
+The overlay neighbors are:
+
+- `leafX Loopback0 -> spine1 Loopback0`
+- `leafX Loopback0 -> spine2 Loopback0`
+
+The relevant EOS pattern is:
+
+```eos
+neighbor OVERLAY update-source Loopback0
+neighbor OVERLAY ebgp-multihop 3
+neighbor OVERLAY send-community extended
+address-family evpn
+   neighbor OVERLAY activate
 ```
 
-### Validation Commands (EOS)
+Why this matters:
 
-```text
-show ip bgp summary
-show ip route
-show interfaces status
-```
+- `update-source Loopback0` gives a stable peering identity independent of a physical link
+- `ebgp-multihop 3` is required because the BGP peer is not directly connected
+- `send-community extended` is required because EVPN depends on extended communities such as route-targets
 
----
+## What the Spines Do
 
-## 2. EVPN Address-Family Establishment
+The spines are not VTEPs. They do two things:
 
-Once underlay BGP is established, the EVPN AFI/SAFI becomes active.
+- carry underlay reachability between leafs
+- act as EVPN transit/redistribution points between leaf ASNs
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant L as Leaf (VTEP)
-  participant S as Spine (EVPN Route Server)
+Operationally, you can think of them as route-server style control-plane nodes for EVPN. They never terminate tenant VLANs and never originate VXLAN encapsulated traffic on behalf of endpoints.
 
-  Note over L,S: Underlay BGP already Established
-  L->>S: UPDATE (Enable AFI/SAFI EVPN)
-  S-->>L: UPDATE (EVPN policy + RS behavior)
-  Note over L,S: EVPN neighbors show Estab
-  L->>S: EVPN Type-3 (IMET) – VNI membership
-  S-->>L: Reflected Type-3 routes from other VTEPs
-```
+## What the Leafs Do
 
-### What Type-3 (IMET) Means
-- Signals that a VTEP participates in a VNI
-- Enables BUM (broadcast, unknown unicast, multicast) handling
-- Required before host MAC learning works correctly
+Each leaf does all of the edge work:
 
-### Validation Commands
+- learns local MACs on access ports
+- participates in VLAN 10 / VNI 10010
+- originates EVPN advertisements for learned endpoints
+- installs remote MAC/IP entries learned through EVPN
+- performs VXLAN encapsulation and decapsulation
 
-```text
-show bgp evpn summary
-show bgp evpn route-type imet
-```
+On `leaf1` and `leaf4`, the leaf also provides first-hop gateway services through VARP.
 
----
+## Route Types That Matter In This Lab
 
-## 3. Host Learning and EVPN Type-2 Routes
+### Type-2 MAC/IP Advertisement
 
-When a host sends traffic, the leaf learns the MAC/IP and advertises it.
+This is the route that matters once hosts start sending traffic.
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant H1 as Host1
-  participant L1 as Leaf1 (VTEP)
-  participant RS as Spine (EVPN RS)
-  participant L4 as Leaf4 (VTEP)
-  participant H2 as Host2
+It carries:
 
-  H1->>L1: ARP who-has 192.168.10.102?
-  L1->>L1: Learn H1 MAC on access port (VLAN 10 / VNI)
-  L1->>RS: EVPN Type-2 (MAC/IP for H1)
-  RS-->>L4: Reflect Type-2 (H1)
-  L4->>L4: Install remote MAC/IP → VTEP (Leaf1)
-  L4->>RS: EVPN Type-2 (MAC/IP for H2)
-  RS-->>L1: Reflect Type-2 (H2)
-  L1->>L1: Install remote MAC/IP → VTEP (Leaf4)
-```
-
-### What Type-2 Routes Carry
 - MAC address
-- Optional IP address
-- VNI
-- Next-hop = VTEP loopback IP
+- optional IP address
+- VNI or Ethernet Tag context
+- next-hop/VTEP information
 
-### Validation Commands
+In this lab, a typical flow is:
 
-```text
-show bgp evpn route-type mac-ip
-show mac address-table
-show ip arp
-```
+1. `host1` ARPs or sends any traffic
+2. `leaf1` learns the source MAC on `Ethernet10`
+3. `leaf1` advertises a Type-2 route for that MAC/IP in VNI `10010`
+4. the spines propagate that EVPN information to the other leafs
+5. `leaf4` installs a remote entry pointing traffic toward `leaf1`
 
----
+### Type-3 Inclusive Multicast Ethernet Tag Route
 
-## 4. VXLAN Data Plane Forwarding
+This route signals VNI membership. Even in a unicast-only test, it is fundamental because it tells the fabric which VTEPs participate in a given broadcast domain.
 
-Once both sides have MAC/IP mappings, traffic is forwarded using VXLAN.
+In practical lab terms, Type-3 proves:
+
+- the VNI exists on the advertising leaf
+- the remote VTEP is a member of that segment
+- BUM handling has enough control-plane context to work
+
+### Type-5 IP Prefix Route
+
+Type-5 is not part of the current service design. This lab is focused on L2VNI extension plus anycast gateway, not distributed IP prefix advertisement for L3VNI services.
+
+That is an important scope boundary: this lab is deep on bridging and host mobility mechanics, not on full tenant routed overlays.
+
+## Anycast Gateway Behavior
+
+`leaf1` and `leaf4` both configure:
+
+- `ip virtual-router mac-address 00:1c:73:00:00:10`
+- `interface Vlan10`
+- `ip address virtual 192.168.10.1/24`
+
+This gives both access leafs the same default gateway identity for hosts in VLAN 10.
+
+Why it matters:
+
+- `host1` and `host2` can use the same default gateway IP
+- the host always ARPs for a local gateway on its attached leaf
+- first-hop symmetry stays simple
+- the fabric can stretch L2 while still keeping gateway behavior distributed
+
+In this exact lab, only `leaf1` and `leaf4` need the SVI because only those two leaves have host-facing ports. `leaf2` and `leaf3` remain pure transit VTEPs for the L2VNI.
+
+## End-to-End Control-Plane Sequence
 
 ```mermaid
 sequenceDiagram
   autonumber
-  participant L1 as Leaf1
-  participant L4 as Leaf4
-  participant H1 as Host1
-  participant H2 as Host2
+  participant L1 as leaf1
+  participant S1 as spine1
+  participant S2 as spine2
+  participant L4 as leaf4
 
-  H1->>L1: Ethernet/IP packet to H2
-  L1->>L1: Lookup MAC/IP → remote VTEP
-  L1->>L4: VXLAN encapsulated packet (UDP/4789)
-  L4->>L4: Decapsulate VXLAN
-  L4->>H2: Deliver original Ethernet frame
+  Note over L1,L4: Underlay IPv4 BGP comes up first
+  L1->>S1: advertise Lo0 and Lo1 in IPv4 unicast
+  L1->>S2: advertise Lo0 and Lo1 in IPv4 unicast
+  L4->>S1: advertise Lo0 and Lo1 in IPv4 unicast
+  L4->>S2: advertise Lo0 and Lo1 in IPv4 unicast
+
+  Note over L1,L4: EVPN AF then establishes over loopbacks
+  L1->>S1: EVPN session established
+  L1->>S2: EVPN session established
+  L4->>S1: EVPN session established
+  L4->>S2: EVPN session established
+
+  L1->>S1: Type-3 for VNI 10010
+  L1->>S2: Type-3 for VNI 10010
+  L4->>S1: Type-3 for VNI 10010
+  L4->>S2: Type-3 for VNI 10010
+
+  Note over L1,L4: Host traffic triggers Type-2 exchange
+  L1->>S1: Type-2 MAC/IP for host1
+  S1->>L4: propagate Type-2 for host1
+  L4->>S2: Type-2 MAC/IP for host2
+  S2->>L1: propagate Type-2 for host2
 ```
 
-### Outer vs Inner Headers
-- **Inner frame**: original host Ethernet/IP
-- **Outer packet**: IP/UDP between VTEP loopbacks (UDP port 4789)
+## Data Plane Walk
 
----
+Once the control plane has converged, forwarding from `host1` to `host2` is:
 
-## Common Failure Patterns
+1. `host1` sends an Ethernet frame toward `host2`
+2. `leaf1` identifies the destination MAC as remote in VNI `10010`
+3. `leaf1` VXLAN-encapsulates the frame using `Vxlan1`
+4. the underlay forwards the outer packet to the remote VTEP
+5. `leaf4` decapsulates and emits the original frame toward `host2`
 
-### Underlay Issues
-- Interfaces down
-- IP addressing errors
-- ASN mismatch
-- TCP/179 blocked
+The important point is that the spines forward only the outer IP packet. They are not aware of tenant MAC tables.
 
-### EVPN Issues
-- EVPN AF not enabled
-- Route-policy blocking EVPN routes
-- Spine not acting as route server
-- Missing Type-3 routes
+## Why This Lab Is Good For Deep Validation
 
-### Data Plane Issues
-- VLAN/VNI mismatch
-- MTU too small for VXLAN
-- Missing loopback reachability
-- SPAN mirroring wrong interface (for visibility)
+Even though there is only one VLAN and one VNI, the lab exercises all of the important mechanics:
 
----
+- routed underlay establishment
+- loopback reachability
+- EVPN adjacency formation
+- VNI membership advertisement
+- MAC/IP export through EVPN
+- remote endpoint installation
+- VXLAN forwarding
+- distributed anycast gateway behavior
 
-## Quick Troubleshooting Checklist
+That makes it a strong base template for adding:
 
-```text
-show ip bgp summary
-show bgp evpn summary
-show bgp evpn route-type imet
-show bgp evpn route-type mac-ip
-show vxlan vtep
-show interfaces vxlan 1
-```
+- more VLANs and VNIs
+- L3VNI and tenant VRFs
+- Type-5 route exchange
+- host mobility tests
+- multitenant route-target policy
 
----
+## EOS Commands That Expose Each Layer
 
-## Notes for This Lab
+| Layer | Commands |
+| --- | --- |
+| physical / interface | `show interfaces status`, `show ip interface brief` |
+| underlay BGP | `show ip bgp summary`, `show ip route` |
+| EVPN sessions | `show bgp evpn summary` |
+| Type-3 | `show bgp evpn route-type imet` |
+| Type-2 | `show bgp evpn route-type mac-ip` |
+| VXLAN state | `show vxlan vtep`, `show interfaces vxlan 1` |
+| bridge learning | `show mac address-table`, `show ip arp vlan 10` |
 
-- Spines act as **EVPN route servers**
-- Leafs act as **VXLAN VTEPs**
-- Hosts generate continuous traffic to validate control + data plane
-- SPAN on leaf1 mirrors traffic for ntopng visibility
-
----
-
-_End of document_
+Those commands are enough to correlate the theory on this page with the running lab.

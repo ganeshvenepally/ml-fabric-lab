@@ -1,19 +1,36 @@
-# ntopng Usage
+# Traffic Visibility Notes
 
-This page explains how ntopng is used in this lab to analyze **real mirrored fabric traffic**.
+This repository includes packet-visibility ideas, but the exact ntopng placement depends on which topology variant you use.
 
----
+## Current State
 
-## Interface Model
+- The staged split deployment uses `topology.fabric.yaml` and `topology.mgmt.yaml`.
+- The older combined topology `ml-clab-topo.yml` contains a fuller inline packet-visibility design.
 
-In this design:
+## Fabric-Side SPAN
 
-| Interface | Purpose |
-|--------|---------|
-| `eth0` | Management (`clab-mgmt`) |
-| `eth1` | Tap (`br-fabric-tap`) |
+`leaf1` is the only leaf with explicit SPAN configuration in the EOS config:
 
-ntopng is started with:
+```eos
+monitor session SPAN source Ethernet1
+monitor session SPAN source Ethernet2
+monitor session SPAN source Ethernet10
+monitor session SPAN destination Ethernet5
+```
 
-```bash
-ntopng --community --redis redis -i eth1 --disable-autologout
+That means the mirrored packet stream consists of:
+
+- uplink traffic to/from `spine1`
+- uplink traffic to/from `spine2`
+- access traffic to/from `host1`
+
+## Why This Matters
+
+It gives you a packet-level view of:
+
+- ARP resolution
+- host onboarding
+- VXLAN-bearing traffic on the fabric edge
+- throughput tests from `host1` to `host2`
+
+For the VXLAN/EVPN documentation set, SPAN is best treated as an adjunct troubleshooting aid rather than part of the control-plane design itself.

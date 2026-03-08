@@ -1,122 +1,30 @@
 # Management Lab
 
-This page documents the **management / observability lab** defined in
-`topology.mgmt.yaml`.
-
-The management lab is deployed **after** the fabric converges and is fully
-independent from the data plane, except for **ntopng**, which receives real
-mirrored traffic via a tap bridge.
-
----
-
-## Overview
-
-The management lab provides:
-
-- Telemetry collection (gNMI)
-- Metrics storage and visualization
-- Centralized logging
-- Flow and packet visibility using **real fabric traffic**
-
-All components connect via the Docker management network `clab-mgmt`.
-
----
+The management topology in `topology.mgmt.yaml` is separate from the VXLAN/EVPN fabric and uses the shared management network `clab-mgmt`.
 
 ## Components
 
-### gnmic
-- Collects gNMI telemetry from Arista devices
-- Exports metrics in Prometheus format
-- Acts as the single telemetry collector
+| Service | Function |
+| --- | --- |
+| `gnmic` | subscribes to EOS gNMI telemetry and exposes Prometheus-format metrics |
+| `mimir` | metrics backend |
+| `grafana` | dashboards and queries |
+| `alloy` | syslog collector and metrics/log pipeline component |
+| `loki` | log backend |
+| `redis` | state backend for traffic-analysis tooling and related services |
 
-### Prometheus
-- Scrapes gnmic metrics
-- Stores time-series telemetry
-- Feeds Grafana dashboards
+## Telemetry Flow
 
-### Grafana
-- Visualizes metrics and logs
-- Pre-provisioned dashboards and datasources
-- Default credentials: `admin / admin`
+The current telemetry flow is:
 
-### Alloy
-- Receives syslog from network devices
-- Forwards logs to Loki
-- Optional HTTP debug endpoint
+`EOS gNMI -> gnmic -> Prometheus-format endpoint -> downstream scrape/ingest path -> Grafana`
 
-### Loki
-- Log storage backend
-- Queried by Grafana for log analysis
+The most important operational point is that `gnmic` is the collector talking to the devices. If you are missing metrics, start by checking the subscription set in `configs/gnmic/gnmic-config.yml`.
 
-### Redis
-- Backend datastore for ntopng
-- Required for ntopng operation
+## Logging Flow
 
-### ntopng
-- Network traffic analysis
-- Captures **real mirrored fabric traffic**
-- Web UI exposed via port forwarding
+The EOS devices send RFC5424 syslog toward Alloy using their management interfaces. Alloy then forwards logs into Loki for Grafana queries.
 
----
+## What This Lab Focuses On
 
-## Network Interfaces
-
-### ntopng Interfaces
-
-| Interface | Purpose |
-|--------|---------|
-| `eth0` | Management (Docker `clab-mgmt`) |
-| `eth1` | Tap interface (`br-fabric-tap`) |
-
-`eth1` receives mirrored packets from `leaf1` via SPAN.
-
----
-
-## Topology
-
-```mermaid
-flowchart LR
-  subgraph Fabric
-    leaf1[(leaf1)]
-  end
-
-  subgraph Host
-    tap((br-fabric-tap))
-  end
-
-  subgraph Mgmt
-    ntop[ntopng]
-    redis[Redis]
-    graf[Grafana]
-    prom[Prometheus]
-    gnmic[gnmic]
-    alloy[Alloy]
-    loki[Loki]
-  end
-
-  leaf1 -- SPAN --> tap
-  tap --> ntop
-  ntop --> redis
-  gnmic --> prom
-  prom --> graf
-  alloy --> loki
-```
-
----
-
-## Access URLs
-
-| Service | URL |
-|------|-----|
-| Grafana | http://localhost:3000 |
-| Prometheus | http://localhost:9090 |
-| ntopng | http://localhost:3001 |
-| gnmic exporter | http://localhost:9804 |
-
----
-
-## Notes
-
-- The management lab can be redeployed independently
-- Restarting management containers does **not** impact the fabric
-- ntopng visibility depends entirely on EOS SPAN configuration
+The management topology is useful, but it is secondary to the core purpose of the repository. The technical center of gravity here is still the VXLAN/EVPN fabric, not the observability stack.

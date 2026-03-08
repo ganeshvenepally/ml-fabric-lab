@@ -1,125 +1,155 @@
 # Deploy & Operations
 
-This page documents how to deploy, monitor, and destroy the labs using
-`stage_deploy.sh`.
+This page explains how the repository brings the lab up, what the staged workflow is doing, and how to operate the environment once it is running.
 
----
+## Authoritative Workflow
 
-## Script Overview
+The staged deployment entrypoint is `stage_deploy.sh`.
 
-`stage_deploy.sh` performs a **staged deployment**:
+Default behavior:
 
-1. Deploys the **fabric lab**
-2. Waits for EVPN BGP convergence
-3. Deploys the **management lab**
-4. Supports full teardown
+1. ensure persistent directories exist
+2. ensure the Docker management network `clab-mgmt` exists
+3. deploy the fabric topology
+4. poll EVPN status on all spines and leafs
+5. deploy the management topology
 
----
+That split is operationally useful because it prevents the management stack from starting before the network itself is stable.
 
-## Usage
+## Deploy
 
-### Deploy (default)
+From the lab root:
 
 ```bash
 ./stage_deploy.sh
 ```
 
-Equivalent to:
+Explicit form:
 
 ```bash
 ./stage_deploy.sh topology.fabric.yaml topology.mgmt.yaml
 ```
 
----
-
-### Destroy both labs
+## Destroy
 
 ```bash
 ./stage_deploy.sh destroy
 ```
 
-Or explicitly:
+The script destroys the management topology first, then the fabric.
+
+## Reconfigure Paths
+
+The script supports faster partial actions:
 
 ```bash
-./stage_deploy.sh destroy topology.fabric.yaml topology.mgmt.yaml
+./stage_deploy.sh -r
+./stage_deploy.sh -rf
+./stage_deploy.sh -rm
 ```
 
----
+Meaning:
 
-## What Happens During Deploy
+- `-r`: reconfigure both topologies
+- `-rf`: reconfigure only the fabric topology
+- `-rm`: reconfigure only the management topology
 
-### Stage 1 – Fabric
-- Deploys `topology.fabric.yaml`
-- Starts spines, leafs, and hosts
-- No management containers are started yet
+`-rf` and `-rm` skip the full staged wait logic.
 
-### EVPN Convergence Check
-- Polls all spines and leafs
-- Runs `show bgp evpn summary`
-- Waits until **all neighbors are `Estab`**
-- Displays a live progress bar
-- Times out safely if convergence fails
+## EVPN Readiness Logic
 
-### Stage 2 – Management
-- Deploys `topology.mgmt.yaml`
-- Starts telemetry, logging, and ntopng
-- ntopng immediately begins sniffing fabric traffic
+The deployment script checks these containers:
 
----
+- `clab-arista-evpn-vxlan-fabric-spine1`
+- `clab-arista-evpn-vxlan-fabric-spine2`
+- `clab-arista-evpn-vxlan-fabric-leaf1`
+- `clab-arista-evpn-vxlan-fabric-leaf2`
+- `clab-arista-evpn-vxlan-fabric-leaf3`
+- `clab-arista-evpn-vxlan-fabric-leaf4`
 
-## Environment Variables
+For each node it runs:
 
-| Variable | Description | Default |
-|-------|-------------|---------|
-| `MAX_WAIT` | EVPN convergence timeout (seconds) | `300` |
-| `POLL_INT` | Poll interval (seconds) | `10` |
-| `SKIP_TAP_BRIDGE` | Skip bridge creation check | `0` |
-| `NO_COLOR` | Disable ANSI colors | `0` |
+```bash
+Cli -c "show bgp evpn summary"
+```
+
+The lab is considered ready when all EVPN neighbors on all those nodes are in `Estab` or `Established` state.
+
+That is a reasonable gating signal for this lab because EVPN establishment depends on:
+
+- interface state
+- underlay reachability
+- loopback reachability
+- overlay BGP health
+
+## Useful Environment Variables
+
+| Variable | Meaning | Default |
+| --- | --- | --- |
+| `MAX_WAIT` | EVPN convergence timeout in seconds | `300` |
+| `POLL_INT` | polling interval in seconds | `10` |
+| `NO_COLOR` | disable color output | `0` |
+| `FABRIC_LAB_NAME` | override fabric lab name | `arista-evpn-vxlan-fabric` |
+| `MGMT_LAB_NAME` | override mgmt lab name | `arista-evpn-vxlan-mgmt` |
 
 Example:
 
 ```bash
-MAX_WAIT=600 POLL_INT=15 ./stage_deploy.sh
+MAX_WAIT=600 POLL_INT=5 ./stage_deploy.sh
 ```
 
----
+## Operational Access
 
-## Common Operations
+### EOS CLI
 
-### Check container status
 ```bash
-docker ps
+docker exec -it clab-arista-evpn-vxlan-fabric-leaf1 Cli
+docker exec -it clab-arista-evpn-vxlan-fabric-spine1 Cli
 ```
 
-### Check EVPN on a leaf
+### Linux Hosts
+
 ```bash
-docker exec clab-arista-evpn-vxlan-fabric-leaf1   Cli -c "show bgp evpn summary"
+docker exec -it clab-arista-evpn-vxlan-fabric-host1 bash
+docker exec -it clab-arista-evpn-vxlan-fabric-host2 bash
 ```
 
-### Restart management lab only
-```bash
-clab destroy -t topology.mgmt.yaml --cleanup
-clab deploy -t topology.mgmt.yaml
-```
+### Management Services
 
----
+| Service | Access |
+| --- | --- |
+| Grafana | `http://localhost:3000` |
+| Mimir | `http://localhost:9009` |
+| Loki | `http://localhost:3100` |
+| gNMIc exporter | `http://localhost:9804/metrics` |
+| Alloy debug UI | `http://localhost:12345` |
 
-## Failure Modes
+## Management Stack Notes
 
-### EVPN does not converge
-- Check underlay reachability
-- Verify EOS configs
-- Script proceeds to management deploy after timeout
+The split management topology currently contains:
 
-### ntopng sees no traffic
-- Verify SPAN config on `leaf1`
-- Confirm `br-fabric-tap` exists and is UP
-- Confirm ntopng is capturing `eth1`
+- `gnmic`
+- `mimir`
+- `grafana`
+- `alloy`
+- `loki`
+- `redis`
 
----
+The repository also includes an older combined topology that has additional inline services and slightly different packaging. When operating the split deployment, treat `topology.mgmt.yaml` as the source of truth.
 
-## Safety Notes
+## Recommended Day-2 Workflow
 
-- `destroy` always removes **both labs**
-- Docker volumes under `persist/` are preserved
-- Host Linux bridge is **never deleted** by the script
+When you are experimenting with EVPN/VXLAN behavior:
+
+1. deploy the lab with the staged script
+2. verify underlay and overlay convergence
+3. test host-to-host reachability
+4. inspect EVPN route tables before and after traffic
+5. make one configuration change at a time
+6. use `-rf` when iterating only on the network fabric
+
+That keeps the failure domain small and makes regression analysis much easier.
+
+## Documentation Publication
+
+The MkDocs source lives under `docs/`. The root `mkdocs.yml` should be used as the site configuration for local preview and later GitHub Pages publishing.

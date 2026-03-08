@@ -1,235 +1,85 @@
-# Arista EVPN/VXLAN Containerlab Lab
+# VXLAN/EVPN Fabric Lab
 
-_GitHub Pages Version_
-> **Split Fabric & Management Labs with Real Traffic Visibility**
+This site documents the VXLAN/EVPN containerlab built in this repository. It is written for an engineer who already knows BGP, VXLAN, and EVPN, and wants to understand exactly how this lab is implemented, why the design choices matter, and how to validate every layer of the system.
 
-This repository provides a **production-grade containerlab design** implementing an
-**Arista EVPN/VXLAN fabric** with a **separate management / observability stack**.
-The two labs are cleanly separated but interconnected using:
-- a shared Docker management network (`clab-mgmt`)
-- a shared Linux bridge tap (`br-fabric-tap`) for **real packet capture**
+## What This Lab Is
 
-Designed and tested for **macOS + OrbStack + Docker + containerlab**.
+The lab models a small spine-leaf fabric built with Arista cEOS:
 
----
+- 2 spines in AS `65000`
+- 4 leafs in AS `65101` to `65104`
+- eBGP underlay on routed /31 links
+- EVPN overlay between leaf loopbacks and both spines
+- VXLAN data plane with `VLAN 10 -> VNI 10010`
+- Anycast default gateway `192.168.10.1/24` using VARP on `leaf1` and `leaf4`
+- Two Linux hosts placed on opposite edges of the fabric for real end-to-end traffic tests
 
-## Table of Contents
-- [Architecture Overview](#architecture-overview)
-- [Topology Diagram](#topology-diagram)
-- [Repository Structure](#repository-structure)
-- [OrbStack Prerequisites](#orbstack-prerequisites)
-- [Deployment Workflow](#deployment-workflow)
-- [stage_deploy.sh](#stage_deploysh)
-- [Observability Stack](#observability-stack)
-- [EOS SPAN Configuration](#eos-span-configuration)
-- [CI Linting](#ci-linting)
-- [GitHub Pages](#github-pages)
-- [Troubleshooting](#troubleshooting)
+The repository currently contains two layout styles:
 
----
+- `topology.fabric.yaml` + `topology.mgmt.yaml`: the staged split deployment used by `stage_deploy.sh`
+- `ml-clab-topo.yml`: an older combined topology that is still useful as a reference because it shows a fuller "all-in-one" lab shape
 
-## Architecture Overview
+This documentation treats the split deployment as authoritative for startup workflow, and uses the combined file only as supporting context where it helps explain intent.
 
-### Fabric Lab
-- 2× Arista spines (eBGP underlay, EVPN route-servers)
-- 4× Arista leafs (VXLAN VTEPs)
-- 2× Linux hosts (iperf traffic generation)
-- VLAN 10 stretched via EVPN
-- Anycast gateway (VARP)
-- SPAN mirror to tap interface
+## Design Intent
 
-### Management Lab
-- gnmic (gNMI telemetry)
-- Prometheus (metrics)
-- Grafana (dashboards)
-- Alloy + Loki (logs)
-- Redis
-- ntopng (packet analysis)
+This is not a generic EVPN demo. The implementation is opinionated:
 
-### Shared Components
-- Docker network: `clab-mgmt`
-- Linux bridge: `br-fabric-tap` (host-based packet tap)
+- The underlay is pure routed eBGP, not an IGP.
+- The overlay is EVPN over eBGP, not iBGP with route reflectors.
+- Spines do not act as VTEPs; they stay out of the data plane.
+- Leafs carry both underlay and overlay control-plane roles.
+- The service is deliberately small: one stretched L2 segment, one anycast gateway, two endpoints. That keeps the control-plane easy to reason about while still exercising the full VXLAN/EVPN workflow.
 
----
+## Read This Site In Order
 
-## Topology Diagram
+If you want a full understanding of the lab, use this sequence:
 
-```text
-                    +---------+       +---------+
-                    | spine1  |       | spine2  |
-                    +----+----+       +----+----+
-                         \                 //
-                          \               //
-                    +------+----+     +----+------+
-                    |   leaf1   |     |   leaf4   |
-                    | (VTEP)    |     | (VTEP)    |
-                    +---+---+---+     +---+---+---+
-                        |   |               |
-                     host1   |            host2
-                             |
-                       SPAN → Eth5
-                             |
-                    br-fabric-tap (Linux bridge)
-                             |
-                         ntopng
+1. [Fabric Lab](fabric.md) for topology, addressing, ASNs, and role placement
+2. [EVPN Control Plane](evpn-control-plane.md) for the technology deep dive
+3. [Deploy & Operations](operations.md) for staged bring-up and day-2 handling
+4. [Validation & Testing](validation.md) for command-by-command verification
+5. [Troubleshooting](troubleshooting.md) for failure isolation
+
+## Architecture Summary
+
+```mermaid
+flowchart TB
+  subgraph Underlay["IPv4 eBGP underlay"]
+    spine1["spine1\nAS 65000\nLo0 10.0.0.1"]
+    spine2["spine2\nAS 65000\nLo0 10.0.0.2"]
+    leaf1["leaf1\nAS 65101\nLo0 10.0.0.11\nLo1 10.0.1.11"]
+    leaf2["leaf2\nAS 65102\nLo0 10.0.0.12\nLo1 10.0.1.12"]
+    leaf3["leaf3\nAS 65103\nLo0 10.0.0.13\nLo1 10.0.1.13"]
+    leaf4["leaf4\nAS 65104\nLo0 10.0.0.14\nLo1 10.0.1.14"]
+  end
+
+  spine1 --- leaf1
+  spine1 --- leaf2
+  spine1 --- leaf3
+  spine1 --- leaf4
+  spine2 --- leaf1
+  spine2 --- leaf2
+  spine2 --- leaf3
+  spine2 --- leaf4
+
+  h1["host1\n192.168.10.101/24"] --- leaf1
+  h2["host2\n192.168.10.102/24"] --- leaf4
 ```
 
----
+## Core Service Being Exercised
 
-## Repository Structure
+The service under test is simple but complete:
 
-```
-.
-├── topology.fabric.yaml
-├── topology.mgmt.yaml
-├── stage_deploy.sh
-├── README.md
-├── .github/workflows/lint.yml
-├── .yamllint
-├── configs/
-│   ├── fabric/
-│   ├── gnmic/
-│   ├── prometheus/
-│   ├── grafana/
-│   ├── alloy/
-│   └── loki/
-└── persist/
-```
+- Host attachment on `leaf1` and `leaf4`
+- Local MAC learning on access ports
+- EVPN Type-2 and Type-3 exchange
+- VTEP discovery and VXLAN encapsulation
+- Anycast default gateway behavior
+- East-west traffic transport across the fabric
 
----
+That combination is enough to validate control-plane convergence, MAC/IP advertisement, BUM replication readiness, and steady-state forwarding.
 
-## OrbStack Prerequisites
+## Publication Note
 
-You must create a Linux bridge **inside OrbStack's Linux environment**.
-
-```bash
-orb create ubuntu clab
-orb -m clab sudo ip link add br-fabric-tap type bridge
-orb -m clab sudo ip link set br-fabric-tap up
-```
-
-Verify:
-
-```bash
-orb -m clab ip link show br-fabric-tap
-```
-
-> Docker bridge options (`com.docker.network.bridge.*`) are **not required**.
-
----
-
-## Deployment Workflow
-
-The lab is deployed in two stages:
-
-1. Fabric lab
-2. EVPN convergence check
-3. Management lab
-
-All handled by `stage_deploy.sh`.
-
----
-
-## stage_deploy.sh
-
-### Deploy
-```bash
-./stage_deploy.sh
-```
-
-### Destroy
-```bash
-./stage_deploy.sh destroy
-```
-
-### Environment Variables
-| Variable | Description |
-|--------|-------------|
-| `MAX_WAIT` | EVPN convergence timeout |
-| `POLL_INT` | Poll interval |
-| `SKIP_TAP_BRIDGE=1` | Skip bridge creation |
-| `NO_COLOR=1` | Disable ANSI output |
-
----
-
-## Observability Stack
-
-| Service | URL |
-|------|-----|
-| Grafana | http://localhost:3000 |
-| Prometheus | http://localhost:9090 |
-| ntopng | http://localhost:3001 |
-| gnmic exporter | http://localhost:9804 |
-
-Grafana default credentials: `admin / admin`
-
----
-
-## EOS SPAN Configuration
-
-Traffic will only reach ntopng if SPAN is configured on **leaf1**.
-
-Example:
-
-```eos
-monitor session 1
-  source interface Ethernet1
-  source interface Ethernet2
-  source interface Ethernet10
-  destination interface Ethernet5
-```
-
-You may also mirror VLANs or Port-Channels.
-
----
-
-## CI Linting
-
-GitHub Actions automatically validates:
-- YAML syntax (`yamllint`)
-- Shell scripts (`shellcheck`)
-- Trailing whitespace
-
-Workflow: `.github/workflows/lint.yml`
-
----
-
-## GitHub Pages
-
-This repository is ready for **GitHub Pages**.
-
-### Enable Pages
-1. Repo → **Settings → Pages**
-2. Source: `main` branch
-3. Folder: `/docs`
-
-### Files
-```
-docs/
-└── index.md
-```
-
-The Pages site renders the same content as this README.
-
----
-
-## Troubleshooting
-
-**ntopng shows no traffic**
-- Verify SPAN config on leaf1
-- Confirm `br-fabric-tap` exists
-- Ensure ntopng is capturing `eth1`
-
-**EVPN never converges**
-- Check EOS configs
-- Validate underlay IP reachability
-
----
-
-## License
-
-MIT (or your preferred license)
-
----
-
-Happy labbing 🚀
+The site is already structured for MkDocs Material. Once you are ready to publish through GitHub Pages, use the files under `docs/` as the source of truth and point your Pages workflow at the root `mkdocs.yml`.

@@ -1,99 +1,185 @@
 # Troubleshooting
 
-This page covers common issues encountered when deploying or operating the lab.
+This page is organized by failure domain so you can isolate problems quickly.
 
----
+## Method
 
-## ntopng Shows No Traffic
+Always classify the failure first:
+
+1. physical or interface problem
+2. underlay routing problem
+3. EVPN control-plane problem
+4. VXLAN/VNI problem
+5. host or gateway problem
+6. observability-stack problem
+
+If you skip classification, you waste time.
+
+## Interfaces Down
 
 ### Symptoms
-- ntopng UI loads but shows zero flows
-- Interfaces appear up, but no packets are seen
+
+- BGP neighbors never leave `Idle` or `Active`
+- `show interfaces status` shows uplinks down
+- hosts cannot even ARP locally
 
 ### Checks
-1. Verify SPAN configuration on `leaf1`:
-   ```eos
-   show monitor
-   ```
-2. Ensure `Ethernet5` is the SPAN destination
-3. Confirm the tap bridge exists:
-   ```bash
-   orb -m clab ip link show br-fabric-tap
-   ```
-4. Confirm ntopng is capturing `eth1`
-5. Verify link exists in both labs:
-   - `leaf1:eth5` → `br-fabric-tap`
-   - `ntopng:eth1` → `br-fabric-tap`
 
----
+```bash
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show interfaces status"
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show ip interface brief"
+docker exec clab-arista-evpn-vxlan-fabric-host1 ip link show eth1
+```
 
-## EVPN Does Not Converge
+### Typical Causes
+
+- wrong interface numbering in the topology file
+- access port not enabled
+- host-side interface not brought up
+
+## Underlay BGP Fails
 
 ### Symptoms
-- Deploy script stalls at EVPN wait stage
-- `show bgp evpn summary` shows neighbors not established
+
+- EVPN never converges
+- remote loopbacks missing from the routing table
+- `show ip bgp summary` shows neighbors stuck or absent
 
 ### Checks
+
 ```bash
-show ip bgp summary
-show bgp evpn summary
-show interfaces status
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show ip bgp summary"
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show ip route 10.0.1.14"
+docker exec clab-arista-evpn-vxlan-fabric-spine1 Cli -c "show ip bgp"
 ```
 
-### Notes
-- The deploy script will time out safely
-- Management lab will still deploy after timeout
+### Typical Causes
 
----
+- point-to-point IP mismatch on a /31
+- ASN mismatch
+- routed interface accidentally left as switchport
+- loopback not advertised in IPv4 unicast
 
-## Containers Fail to Start
+## EVPN Sessions Down
+
+### Symptoms
+
+- `show ip bgp summary` is healthy but `show bgp evpn summary` is not
+- deployment script waits until timeout
 
 ### Checks
+
 ```bash
-docker ps -a
-docker logs <container>
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show bgp evpn summary"
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show running-config section router bgp"
 ```
 
-- Ensure `clab-mgmt` network exists
-- Ensure required images are pulled
+### Typical Causes
 
----
+- missing `address-family evpn`
+- missing `neighbor OVERLAY activate`
+- missing `send-community extended`
+- loopback reachability issue even though physical links are up
+- wrong overlay neighbor IPs
 
-## Bridge Errors
+## VNI Exists But Remote Endpoints Do Not Learn
 
 ### Symptoms
-- containerlab errors referencing `kind: bridge`
-- ntopng tap interface missing
 
-### Resolution
-Ensure the bridge exists **before** deployment:
+- EVPN sessions are up
+- IMET routes are present
+- host-to-host traffic still fails
+
+### Checks
 
 ```bash
-orb -m clab sudo ip link add br-fabric-tap type bridge
-orb -m clab sudo ip link set br-fabric-tap up
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show bgp evpn route-type imet"
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show bgp evpn route-type mac-ip"
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show mac address-table dynamic"
 ```
 
----
+### Typical Causes
 
-## Cleanup Issues
+- no local host traffic yet, so no MAC/IP route has been originated
+- VLAN-to-VNI mapping mismatch
+- missing `redistribute learned` under the VLAN EVPN stanza
+- host connected to the wrong VLAN
+
+## Anycast Gateway Problems
 
 ### Symptoms
-- Containers remain after destroy
-- Volumes persist unexpectedly
 
-### Resolution
+- hosts can talk only within the same leaf or not at all
+- default gateway resolution is inconsistent
+- ARP for `192.168.10.1` fails
+
+### Checks
+
 ```bash
-clab destroy -t topology.fabric.yaml --cleanup
-clab destroy -t topology.mgmt.yaml --cleanup
+docker exec clab-arista-evpn-vxlan-fabric-host1 ip neigh
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show ip virtual-router"
+docker exec clab-arista-evpn-vxlan-fabric-leaf4 Cli -c "show ip virtual-router"
 ```
 
-Persistent data under `persist/` is intentionally preserved.
+### Typical Causes
 
----
+- `Vlan10` missing or shut
+- VARP MAC mismatch between access leafs
+- host port not in VLAN 10
 
-## Getting Help
+## MTU Problems
 
-If something still doesn’t look right:
-- Enable verbose output in the deploy script
-- Inspect EOS configs under `configs/fabric/`
-- Use `docker exec` to inspect containers interactively
+### Symptoms
+
+- BGP and ARP work, but larger packets fail
+- `iperf3` is unstable while ping with tiny payload works
+
+### Checks
+
+```bash
+docker exec clab-arista-evpn-vxlan-fabric-host1 ping -M do -s 1472 -c 3 192.168.10.102
+docker exec clab-arista-evpn-vxlan-fabric-leaf1 Cli -c "show interfaces ethernet 1"
+docker exec clab-arista-evpn-vxlan-fabric-leaf4 Cli -c "show interfaces ethernet 1"
+```
+
+### Typical Causes
+
+- inconsistent MTU between routed fabric links
+- host-side assumptions about end-to-end payload size
+
+## Management Stack Problems
+
+### Symptoms
+
+- Grafana opens but dashboards are empty
+- metrics endpoint is empty
+- logs do not appear in Loki
+
+### Checks
+
+```bash
+curl -s http://localhost:9804/metrics | head
+curl -s http://localhost:9009/ready
+curl -s http://localhost:3100/ready
+docker ps --format '{{.Names}}'
+```
+
+### Typical Causes
+
+- management topology not deployed
+- datasource drift between dashboards and the current stack
+- `gnmic` subscription paths not matching the dashboards you expect
+
+## Repository Drift To Be Aware Of
+
+This repository contains evidence of multiple iterations of the lab:
+
+- split topologies
+- a combined topology
+- older docs that referenced Prometheus and ntopng differently
+
+If behavior looks inconsistent, verify the exact file you deployed before assuming the network is wrong. For staged deployment, start from:
+
+- `topology.fabric.yaml`
+- `topology.mgmt.yaml`
+- `stage_deploy.sh`
