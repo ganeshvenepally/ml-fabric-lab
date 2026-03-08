@@ -11,8 +11,10 @@
       
       
       
-        <link rel="prev" href="../validation/">
+        <link rel="prev" href="../operations/">
       
+      
+        <link rel="next" href="../troubleshooting/">
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>Troubleshooting - Arista EVPN/VXLAN Containerlab Lab</title>
+        <title>Validation & Testing - Arista EVPN/VXLAN Containerlab Lab</title>
       
     
     
@@ -66,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting" class="md-skip">
+        <a href="#validation-testing" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Troubleshooting
+              Validation & Testing
             
           </span>
         </div>
@@ -627,34 +629,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../validation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Validation & Testing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -674,7 +648,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting
+    Validation & Testing
   
 
     
@@ -692,7 +666,7 @@
   <span class="md-ellipsis">
     
   
-    Troubleshooting
+    Validation & Testing
   
 
     
@@ -718,10 +692,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#method" class="md-nav__link">
+  <a href="#validation-strategy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method
+        Validation Strategy
       
     </span>
   </a>
@@ -729,22 +703,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interfaces-down" class="md-nav__link">
+  <a href="#1-interface-and-ip-sanity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interfaces Down
+        1. Interface and IP Sanity
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Interfaces Down">
+    <nav class="md-nav" aria-label="1. Interface and IP Sanity">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms" class="md-nav__link">
+  <a href="#on-a-leaf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        On a leaf
       
     </span>
   </a>
@@ -752,21 +726,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks" class="md-nav__link">
+  <a href="#on-a-host" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        On a host
       
     </span>
   </a>
@@ -779,22 +742,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#underlay-bgp-fails" class="md-nav__link">
+  <a href="#2-underlay-reachability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Underlay BGP Fails
+        2. Underlay Reachability
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Underlay BGP Fails">
+    <nav class="md-nav" aria-label="2. Underlay Reachability">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_1" class="md-nav__link">
+  <a href="#check-bgp-ipv4-unicast-on-leaf1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        Check BGP IPv4 unicast on leaf1
       
     </span>
   </a>
@@ -802,21 +765,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_1" class="md-nav__link">
+  <a href="#check-bgp-ipv4-unicast-on-a-spine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        Check BGP IPv4 unicast on a spine
       
     </span>
   </a>
@@ -829,44 +781,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#evpn-sessions-down" class="md-nav__link">
+  <a href="#3-evpn-session-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        EVPN Sessions Down
+        3. EVPN Session Health
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="EVPN Sessions Down">
+    <nav class="md-nav" aria-label="3. EVPN Session Health">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_2" class="md-nav__link">
+  <a href="#per-node-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#checks_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        Per-node summary
       
     </span>
   </a>
@@ -879,22 +809,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vni-exists-but-remote-endpoints-do-not-learn" class="md-nav__link">
+  <a href="#4-vni-membership-and-vtep-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        VNI Exists But Remote Endpoints Do Not Learn
+        4. VNI Membership and VTEP Discovery
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="VNI Exists But Remote Endpoints Do Not Learn">
+    <nav class="md-nav" aria-label="4. VNI Membership and VTEP Discovery">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_3" class="md-nav__link">
+  <a href="#imet-type-3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        IMET / Type-3
       
     </span>
   </a>
@@ -902,21 +832,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_3" class="md-nav__link">
+  <a href="#vxlan-operational-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        VXLAN operational state
       
     </span>
   </a>
@@ -929,22 +848,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#anycast-gateway-problems" class="md-nav__link">
+  <a href="#5-local-endpoint-learning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Anycast Gateway Problems
+        5. Local Endpoint Learning
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Anycast Gateway Problems">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-evpn-type-2-macip-advertisement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. EVPN Type-2 MAC/IP Advertisement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-end-to-end-forwarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. End-to-End Forwarding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. End-to-End Forwarding">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_4" class="md-nav__link">
+  <a href="#reachability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        Reachability
       
     </span>
   </a>
@@ -952,10 +893,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_4" class="md-nav__link">
+  <a href="#path-mtu-sanity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
+        Path MTU sanity
       
     </span>
   </a>
@@ -963,10 +904,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#typical-causes_4" class="md-nav__link">
+  <a href="#throughput" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Causes
+        Throughput
       
     </span>
   </a>
@@ -979,22 +920,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mtu-problems" class="md-nav__link">
+  <a href="#8-gateway-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MTU Problems
+        8. Gateway Validation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="MTU Problems">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-optional-packet-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Optional Packet Capture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-management-plane-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Management-Plane Validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Management-Plane Validation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_5" class="md-nav__link">
+  <a href="#gnmic-exporter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        gNMIc exporter
       
     </span>
   </a>
@@ -1002,10 +965,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_5" class="md-nav__link">
+  <a href="#mimir-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
+        Mimir health
       
     </span>
   </a>
@@ -1013,10 +976,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#typical-causes_5" class="md-nav__link">
+  <a href="#loki-readiness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Causes
+        Loki readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grafana
       
     </span>
   </a>
@@ -1029,60 +1003,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#management-stack-problems" class="md-nav__link">
+  <a href="#suggested-test-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Management Stack Problems
+        Suggested Test Matrix
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Management Stack Problems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#symptoms_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Symptoms
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#checks_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#repository-drift-to-be-aware-of" class="md-nav__link">
+  <a href="#what-to-check-before-extending-the-design" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Repository Drift To Be Aware Of
+        What To Check Before Extending The Design
       
     </span>
   </a>
@@ -1093,6 +1028,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1132,10 +1095,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#method" class="md-nav__link">
+  <a href="#validation-strategy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Method
+        Validation Strategy
       
     </span>
   </a>
@@ -1143,22 +1106,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interfaces-down" class="md-nav__link">
+  <a href="#1-interface-and-ip-sanity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interfaces Down
+        1. Interface and IP Sanity
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Interfaces Down">
+    <nav class="md-nav" aria-label="1. Interface and IP Sanity">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms" class="md-nav__link">
+  <a href="#on-a-leaf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        On a leaf
       
     </span>
   </a>
@@ -1166,21 +1129,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks" class="md-nav__link">
+  <a href="#on-a-host" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        On a host
       
     </span>
   </a>
@@ -1193,22 +1145,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#underlay-bgp-fails" class="md-nav__link">
+  <a href="#2-underlay-reachability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Underlay BGP Fails
+        2. Underlay Reachability
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Underlay BGP Fails">
+    <nav class="md-nav" aria-label="2. Underlay Reachability">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_1" class="md-nav__link">
+  <a href="#check-bgp-ipv4-unicast-on-leaf1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        Check BGP IPv4 unicast on leaf1
       
     </span>
   </a>
@@ -1216,21 +1168,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_1" class="md-nav__link">
+  <a href="#check-bgp-ipv4-unicast-on-a-spine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        Check BGP IPv4 unicast on a spine
       
     </span>
   </a>
@@ -1243,44 +1184,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#evpn-sessions-down" class="md-nav__link">
+  <a href="#3-evpn-session-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        EVPN Sessions Down
+        3. EVPN Session Health
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="EVPN Sessions Down">
+    <nav class="md-nav" aria-label="3. EVPN Session Health">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_2" class="md-nav__link">
+  <a href="#per-node-summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#checks_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        Per-node summary
       
     </span>
   </a>
@@ -1293,22 +1212,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vni-exists-but-remote-endpoints-do-not-learn" class="md-nav__link">
+  <a href="#4-vni-membership-and-vtep-discovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        VNI Exists But Remote Endpoints Do Not Learn
+        4. VNI Membership and VTEP Discovery
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="VNI Exists But Remote Endpoints Do Not Learn">
+    <nav class="md-nav" aria-label="4. VNI Membership and VTEP Discovery">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_3" class="md-nav__link">
+  <a href="#imet-type-3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        IMET / Type-3
       
     </span>
   </a>
@@ -1316,21 +1235,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_3" class="md-nav__link">
+  <a href="#vxlan-operational-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
+        VXLAN operational state
       
     </span>
   </a>
@@ -1343,22 +1251,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#anycast-gateway-problems" class="md-nav__link">
+  <a href="#5-local-endpoint-learning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Anycast Gateway Problems
+        5. Local Endpoint Learning
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Anycast Gateway Problems">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-evpn-type-2-macip-advertisement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. EVPN Type-2 MAC/IP Advertisement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-end-to-end-forwarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. End-to-End Forwarding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. End-to-End Forwarding">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_4" class="md-nav__link">
+  <a href="#reachability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        Reachability
       
     </span>
   </a>
@@ -1366,10 +1296,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_4" class="md-nav__link">
+  <a href="#path-mtu-sanity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
+        Path MTU sanity
       
     </span>
   </a>
@@ -1377,10 +1307,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#typical-causes_4" class="md-nav__link">
+  <a href="#throughput" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Causes
+        Throughput
       
     </span>
   </a>
@@ -1393,22 +1323,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mtu-problems" class="md-nav__link">
+  <a href="#8-gateway-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MTU Problems
+        8. Gateway Validation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="MTU Problems">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-optional-packet-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Optional Packet Capture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-management-plane-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Management-Plane Validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Management-Plane Validation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#symptoms_5" class="md-nav__link">
+  <a href="#gnmic-exporter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symptoms
+        gNMIc exporter
       
     </span>
   </a>
@@ -1416,10 +1368,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#checks_5" class="md-nav__link">
+  <a href="#mimir-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checks
+        Mimir health
       
     </span>
   </a>
@@ -1427,10 +1379,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#typical-causes_5" class="md-nav__link">
+  <a href="#loki-readiness" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Causes
+        Loki readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grafana" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grafana
       
     </span>
   </a>
@@ -1443,60 +1406,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#management-stack-problems" class="md-nav__link">
+  <a href="#suggested-test-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Management Stack Problems
+        Suggested Test Matrix
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Management Stack Problems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#symptoms_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Symptoms
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#checks_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Checks
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typical-causes_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Typical Causes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#repository-drift-to-be-aware-of" class="md-nav__link">
+  <a href="#what-to-check-before-extending-the-design" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Repository Drift To Be Aware Of
+        What To Check Before Extending The Design
       
     </span>
   </a>
@@ -1520,159 +1444,206 @@
 
 
 
-<h1 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h1>
-<p>This page is organized by failure domain so you can isolate problems quickly.</p>
-<h2 id="method">Method<a class="headerlink" href="#method" title="Permanent link">&para;</a></h2>
-<p>Always classify the failure first:</p>
+<h1 id="validation-testing">Validation &amp; Testing<a class="headerlink" href="#validation-testing" title="Permanent link">&para;</a></h1>
+<p>This page is the practical runbook for proving the lab works. The sequence is written to narrow failures quickly by moving from the bottom of the stack upward.</p>
+<h2 id="validation-strategy">Validation Strategy<a class="headerlink" href="#validation-strategy" title="Permanent link">&para;</a></h2>
+<p>Treat the fabric as five layers:</p>
 <ol>
-<li>physical or interface problem</li>
-<li>underlay routing problem</li>
-<li>EVPN control-plane problem</li>
-<li>VXLAN/VNI problem</li>
-<li>host or gateway problem</li>
-<li>observability-stack problem</li>
+<li>interfaces and addressing</li>
+<li>underlay routing</li>
+<li>EVPN control plane</li>
+<li>VXLAN/VTEP state</li>
+<li>endpoint forwarding</li>
 </ol>
-<p>If you skip classification, you waste time.</p>
-<h2 id="interfaces-down">Interfaces Down<a class="headerlink" href="#interfaces-down" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms">Symptoms<a class="headerlink" href="#symptoms" title="Permanent link">&para;</a></h3>
-<ul>
-<li>BGP neighbors never leave <code>Idle</code> or <code>Active</code></li>
-<li><code>show interfaces status</code> shows uplinks down</li>
-<li>hosts cannot even ARP locally</li>
-</ul>
-<h3 id="checks">Checks<a class="headerlink" href="#checks" title="Permanent link">&para;</a></h3>
+<p>Do not skip directly to <code>ping</code> and assume it tells you enough. It does not.</p>
+<h2 id="1-interface-and-ip-sanity">1. Interface and IP Sanity<a class="headerlink" href="#1-interface-and-ip-sanity" title="Permanent link">&para;</a></h2>
+<h3 id="on-a-leaf">On a leaf<a class="headerlink" href="#on-a-leaf" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show interfaces status&quot;</span>
 docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip interface brief&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span>show<span class="w"> </span>eth1
 </code></pre></div>
-<h3 id="typical-causes">Typical Causes<a class="headerlink" href="#typical-causes" title="Permanent link">&para;</a></h3>
+<p>What you want:</p>
 <ul>
-<li>wrong interface numbering in the topology file</li>
-<li>access port not enabled</li>
-<li>host-side interface not brought up</li>
+<li><code>Ethernet1</code> and <code>Ethernet2</code> up/up</li>
+<li><code>Loopback0</code> and <code>Loopback1</code> present</li>
+<li><code>Ethernet10</code> up/up when the host is attached</li>
+<li><code>Vlan10</code> present on <code>leaf1</code> and <code>leaf4</code></li>
 </ul>
-<h2 id="underlay-bgp-fails">Underlay BGP Fails<a class="headerlink" href="#underlay-bgp-fails" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_1">Symptoms<a class="headerlink" href="#symptoms_1" title="Permanent link">&para;</a></h3>
+<h3 id="on-a-host">On a host<a class="headerlink" href="#on-a-host" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>addr<span class="w"> </span>show<span class="w"> </span>dev<span class="w"> </span>eth1
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>route
+</code></pre></div>
+<p>What you want:</p>
 <ul>
-<li>EVPN never converges</li>
-<li>remote loopbacks missing from the routing table</li>
-<li><code>show ip bgp summary</code> shows neighbors stuck or absent</li>
+<li><code>192.168.10.101/24</code> on <code>host1</code></li>
+<li>default route via <code>192.168.10.1</code></li>
 </ul>
-<h3 id="checks_1">Checks<a class="headerlink" href="#checks_1" title="Permanent link">&para;</a></h3>
+<h2 id="2-underlay-reachability">2. Underlay Reachability<a class="headerlink" href="#2-underlay-reachability" title="Permanent link">&para;</a></h2>
+<h3 id="check-bgp-ipv4-unicast-on-leaf1">Check BGP IPv4 unicast on leaf1<a class="headerlink" href="#check-bgp-ipv4-unicast-on-leaf1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip bgp summary&quot;</span>
 docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip route 10.0.1.14&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip bgp&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip route 10.0.0.2&quot;</span>
 </code></pre></div>
-<h3 id="typical-causes_1">Typical Causes<a class="headerlink" href="#typical-causes_1" title="Permanent link">&para;</a></h3>
+<p>What you want:</p>
 <ul>
-<li>point-to-point IP mismatch on a /31</li>
-<li>ASN mismatch</li>
-<li>routed interface accidentally left as switchport</li>
-<li>loopback not advertised in IPv4 unicast</li>
+<li>both underlay neighbors established</li>
+<li>reachability to remote <code>Loopback0</code></li>
+<li>reachability to remote <code>Loopback1</code></li>
 </ul>
-<h2 id="evpn-sessions-down">EVPN Sessions Down<a class="headerlink" href="#evpn-sessions-down" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_2">Symptoms<a class="headerlink" href="#symptoms_2" title="Permanent link">&para;</a></h3>
-<ul>
-<li><code>show ip bgp summary</code> is healthy but <code>show bgp evpn summary</code> is not</li>
-<li>deployment script waits until timeout</li>
-</ul>
-<h3 id="checks_2">Checks<a class="headerlink" href="#checks_2" title="Permanent link">&para;</a></h3>
+<h3 id="check-bgp-ipv4-unicast-on-a-spine">Check BGP IPv4 unicast on a spine<a class="headerlink" href="#check-bgp-ipv4-unicast-on-a-spine" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip bgp summary&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip route 10.0.1.11&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip route 10.0.1.14&quot;</span>
+</code></pre></div>
+<p>You should see all four leaf loopback pairs reachable through the underlay.</p>
+<h2 id="3-evpn-session-health">3. EVPN Session Health<a class="headerlink" href="#3-evpn-session-health" title="Permanent link">&para;</a></h2>
+<h3 id="per-node-summary">Per-node summary<a class="headerlink" href="#per-node-summary" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn summary&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show running-config section router bgp&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn summary&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn summary&quot;</span>
 </code></pre></div>
-<h3 id="typical-causes_2">Typical Causes<a class="headerlink" href="#typical-causes_2" title="Permanent link">&para;</a></h3>
+<p>What you want:</p>
 <ul>
-<li>missing <code>address-family evpn</code></li>
-<li>missing <code>neighbor OVERLAY activate</code></li>
-<li>missing <code>send-community extended</code></li>
-<li>loopback reachability issue even though physical links are up</li>
-<li>wrong overlay neighbor IPs</li>
+<li><code>leaf1</code> has EVPN sessions to <code>10.0.0.1</code> and <code>10.0.0.2</code></li>
+<li><code>leaf4</code> has EVPN sessions to <code>10.0.0.1</code> and <code>10.0.0.2</code></li>
+<li>each spine has EVPN sessions to all four leaf loopbacks</li>
 </ul>
-<h2 id="vni-exists-but-remote-endpoints-do-not-learn">VNI Exists But Remote Endpoints Do Not Learn<a class="headerlink" href="#vni-exists-but-remote-endpoints-do-not-learn" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_3">Symptoms<a class="headerlink" href="#symptoms_3" title="Permanent link">&para;</a></h3>
-<ul>
-<li>EVPN sessions are up</li>
-<li>IMET routes are present</li>
-<li>host-to-host traffic still fails</li>
-</ul>
-<h3 id="checks_3">Checks<a class="headerlink" href="#checks_3" title="Permanent link">&para;</a></h3>
+<h2 id="4-vni-membership-and-vtep-discovery">4. VNI Membership and VTEP Discovery<a class="headerlink" href="#4-vni-membership-and-vtep-discovery" title="Permanent link">&para;</a></h2>
+<h3 id="imet-type-3">IMET / Type-3<a class="headerlink" href="#imet-type-3" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type imet&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type mac-ip&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show mac address-table dynamic&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type imet&quot;</span>
 </code></pre></div>
-<h3 id="typical-causes_3">Typical Causes<a class="headerlink" href="#typical-causes_3" title="Permanent link">&para;</a></h3>
+<p>What you want:</p>
 <ul>
-<li>no local host traffic yet, so no MAC/IP route has been originated</li>
-<li>VLAN-to-VNI mapping mismatch</li>
-<li>missing <code>redistribute learned</code> under the VLAN EVPN stanza</li>
-<li>host connected to the wrong VLAN</li>
+<li>entries for all VTEPs participating in <code>VNI 10010</code></li>
+<li>local and remote membership visible</li>
 </ul>
-<h2 id="anycast-gateway-problems">Anycast Gateway Problems<a class="headerlink" href="#anycast-gateway-problems" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_4">Symptoms<a class="headerlink" href="#symptoms_4" title="Permanent link">&para;</a></h3>
-<ul>
-<li>hosts can talk only within the same leaf or not at all</li>
-<li>default gateway resolution is inconsistent</li>
-<li>ARP for <code>192.168.10.1</code> fails</li>
-</ul>
-<h3 id="checks_4">Checks<a class="headerlink" href="#checks_4" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>neigh
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip virtual-router&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip virtual-router&quot;</span>
+<h3 id="vxlan-operational-state">VXLAN operational state<a class="headerlink" href="#vxlan-operational-state" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show interfaces vxlan 1&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show vxlan vtep&quot;</span>
 </code></pre></div>
-<h3 id="typical-causes_4">Typical Causes<a class="headerlink" href="#typical-causes_4" title="Permanent link">&para;</a></h3>
+<p>What you want:</p>
 <ul>
-<li><code>Vlan10</code> missing or shut</li>
-<li>VARP MAC mismatch between access leafs</li>
-<li>host port not in VLAN 10</li>
+<li><code>Vxlan1</code> operational</li>
+<li>remote VTEPs learned</li>
 </ul>
-<h2 id="mtu-problems">MTU Problems<a class="headerlink" href="#mtu-problems" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_5">Symptoms<a class="headerlink" href="#symptoms_5" title="Permanent link">&para;</a></h3>
+<h2 id="5-local-endpoint-learning">5. Local Endpoint Learning<a class="headerlink" href="#5-local-endpoint-learning" title="Permanent link">&para;</a></h2>
+<p>Generate a little traffic first:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">192</span>.168.10.102
+</code></pre></div>
+<p>Then inspect the local edge:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show mac address-table dynamic&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip arp vlan 10&quot;</span>
+</code></pre></div>
+<p>What you want on <code>leaf1</code>:</p>
 <ul>
-<li>BGP and ARP work, but larger packets fail</li>
-<li><code>iperf3</code> is unstable while ping with tiny payload works</li>
+<li><code>host1</code> MAC learned locally on <code>Ethernet10</code></li>
+<li><code>host2</code> MAC learned remotely through VXLAN/EVPN</li>
+<li>ARP entries for both host IPs once traffic has occurred</li>
 </ul>
-<h3 id="checks_5">Checks<a class="headerlink" href="#checks_5" title="Permanent link">&para;</a></h3>
+<h2 id="6-evpn-type-2-macip-advertisement">6. EVPN Type-2 MAC/IP Advertisement<a class="headerlink" href="#6-evpn-type-2-macip-advertisement" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type mac-ip&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn route-type mac-ip&quot;</span>
+</code></pre></div>
+<p>What you want:</p>
+<ul>
+<li>each access leaf advertises its directly attached host</li>
+<li>the remote host appears as an EVPN-learned entry</li>
+<li>the route is tied to <code>VNI 10010</code></li>
+</ul>
+<p>This is the best single command for proving that endpoint reachability has been exported into the EVPN control plane.</p>
+<h2 id="7-end-to-end-forwarding">7. End-to-End Forwarding<a class="headerlink" href="#7-end-to-end-forwarding" title="Permanent link">&para;</a></h2>
+<h3 id="reachability">Reachability<a class="headerlink" href="#reachability" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">192</span>.168.10.102
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host2<span class="w"> </span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">192</span>.168.10.101
+</code></pre></div>
+<h3 id="path-mtu-sanity">Path MTU sanity<a class="headerlink" href="#path-mtu-sanity" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ping<span class="w"> </span>-M<span class="w"> </span><span class="k">do</span><span class="w"> </span>-s<span class="w"> </span><span class="m">1472</span><span class="w"> </span>-c<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">192</span>.168.10.102
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show interfaces ethernet 1&quot;</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf4<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show interfaces ethernet 1&quot;</span>
 </code></pre></div>
-<h3 id="typical-causes_5">Typical Causes<a class="headerlink" href="#typical-causes_5" title="Permanent link">&para;</a></h3>
+<p>If this fails, inspect MTU handling end to end before blaming EVPN.</p>
+<h3 id="throughput">Throughput<a class="headerlink" href="#throughput" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>iperf3<span class="w"> </span>-c<span class="w"> </span><span class="m">192</span>.168.10.102<span class="w"> </span>-P<span class="w"> </span><span class="m">4</span><span class="w"> </span>-t<span class="w"> </span><span class="m">20</span>
+</code></pre></div>
+<p>This confirms the data plane is stable under more than a single ICMP flow.</p>
+<h2 id="8-gateway-validation">8. Gateway Validation<a class="headerlink" href="#8-gateway-validation" title="Permanent link">&para;</a></h2>
+<p>On <code>host1</code>:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>ip<span class="w"> </span>neigh<span class="w"> </span>show
+</code></pre></div>
+<p>On <code>leaf1</code>:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show ip virtual-router&quot;</span>
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show running-config section virtual-router&quot;</span>
+</code></pre></div>
+<p>What you want:</p>
 <ul>
-<li>inconsistent MTU between routed fabric links</li>
-<li>host-side assumptions about end-to-end payload size</li>
+<li>the host resolves <code>192.168.10.1</code> to the shared VARP MAC</li>
+<li><code>leaf1</code> and <code>leaf4</code> both present the same anycast identity</li>
 </ul>
-<h2 id="management-stack-problems">Management Stack Problems<a class="headerlink" href="#management-stack-problems" title="Permanent link">&para;</a></h2>
-<h3 id="symptoms_6">Symptoms<a class="headerlink" href="#symptoms_6" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Grafana opens but dashboards are empty</li>
-<li>metrics endpoint is empty</li>
-<li>logs do not appear in Loki</li>
-</ul>
-<h3 id="checks_6">Checks<a class="headerlink" href="#checks_6" title="Permanent link">&para;</a></h3>
+<h2 id="9-optional-packet-capture">9. Optional Packet Capture<a class="headerlink" href="#9-optional-packet-capture" title="Permanent link">&para;</a></h2>
+<p>On <code>host1</code>:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>tcpdump<span class="w"> </span>-ni<span class="w"> </span>eth1
+</code></pre></div>
+<p>If you want to capture on the VTEP itself, run a shell inside the leaf container and capture the Linux interface that backs the cEOS link, but for most validation the EOS show commands are a cleaner source of truth.</p>
+<h2 id="10-management-plane-validation">10. Management-Plane Validation<a class="headerlink" href="#10-management-plane-validation" title="Permanent link">&para;</a></h2>
+<h3 id="gnmic-exporter">gNMIc exporter<a class="headerlink" href="#gnmic-exporter" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:9804/metrics<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
-curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:9009/ready
-curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:3100/ready
-docker<span class="w"> </span>ps<span class="w"> </span>--format<span class="w"> </span><span class="s1">&#39;{{.Names}}&#39;</span>
 </code></pre></div>
-<h3 id="typical-causes_6">Typical Causes<a class="headerlink" href="#typical-causes_6" title="Permanent link">&para;</a></h3>
-<ul>
-<li>management topology not deployed</li>
-<li>datasource drift between dashboards and the current stack</li>
-<li><code>gnmic</code> subscription paths not matching the dashboards you expect</li>
-</ul>
-<h2 id="repository-drift-to-be-aware-of">Repository Drift To Be Aware Of<a class="headerlink" href="#repository-drift-to-be-aware-of" title="Permanent link">&para;</a></h2>
-<p>This repository contains evidence of multiple iterations of the lab:</p>
-<ul>
-<li>split topologies</li>
-<li>a combined topology</li>
-<li>older docs that referenced Prometheus and ntopng differently</li>
-</ul>
-<p>If behavior looks inconsistent, verify the exact file you deployed before assuming the network is wrong. For staged deployment, start from:</p>
-<ul>
-<li><code>topology.fabric.yaml</code></li>
-<li><code>topology.mgmt.yaml</code></li>
-<li><code>stage_deploy.sh</code></li>
-</ul>
+<h3 id="mimir-health">Mimir health<a class="headerlink" href="#mimir-health" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:9009/ready
+</code></pre></div>
+<h3 id="loki-readiness">Loki readiness<a class="headerlink" href="#loki-readiness" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:3100/ready
+</code></pre></div>
+<h3 id="grafana">Grafana<a class="headerlink" href="#grafana" title="Permanent link">&para;</a></h3>
+<p>Open <code>http://localhost:3000</code> and validate that datasources and dashboards load.</p>
+<h2 id="suggested-test-matrix">Suggested Test Matrix<a class="headerlink" href="#suggested-test-matrix" title="Permanent link">&para;</a></h2>
+<p>Use this matrix when extending the lab:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Command</th>
+<th>Expected Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>underlay BGP</td>
+<td><code>show ip bgp summary</code></td>
+<td>all routed neighbors established</td>
+</tr>
+<tr>
+<td>overlay BGP</td>
+<td><code>show bgp evpn summary</code></td>
+<td>all EVPN peers established</td>
+</tr>
+<tr>
+<td>IMET</td>
+<td><code>show bgp evpn route-type imet</code></td>
+<td>all VTEP members visible</td>
+</tr>
+<tr>
+<td>MAC/IP</td>
+<td><code>show bgp evpn route-type mac-ip</code></td>
+<td>local and remote host entries visible</td>
+</tr>
+<tr>
+<td>VTEP state</td>
+<td><code>show vxlan vtep</code></td>
+<td>remote VTEPs present</td>
+</tr>
+<tr>
+<td>anycast gateway</td>
+<td><code>ip neigh show</code> on host</td>
+<td>gateway MAC matches VARP MAC</td>
+</tr>
+<tr>
+<td>user traffic</td>
+<td><code>ping</code>, <code>iperf3</code></td>
+<td>clean end-to-end forwarding</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-to-check-before-extending-the-design">What To Check Before Extending The Design<a class="headerlink" href="#what-to-check-before-extending-the-design" title="Permanent link">&para;</a></h2>
+<p>Before adding more VLANs, VRFs, or leafs, make sure the current single-service fabric is clean in all five layers. If the base lab is not deterministic, scaling it will only multiply ambiguity.</p>
 
 
 

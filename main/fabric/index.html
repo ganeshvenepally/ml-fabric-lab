@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Split Fabric & Management containerlab labs with real traffic tap.">
+        <meta name="description" content="Deep documentation for the VXLAN/EVPN fabric, staged deployment workflow, and validation procedures.">
       
       
       
@@ -218,11 +218,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../operations/" class="md-tabs__link">
+        <a href="../evpn-control-plane/" class="md-tabs__link">
           
   
   
-  Operations
+  Deep Dives
 
         </a>
       </li>
@@ -238,11 +238,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../evpn-control-plane/" class="md-tabs__link">
+        <a href="../operations/" class="md-tabs__link">
           
   
   
-  Deep Dives
+  Operations
 
         </a>
       </li>
@@ -434,10 +434,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#topology-roles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Topology Roles
       
     </span>
   </a>
@@ -445,77 +445,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nodes" class="md-nav__link">
+  <a href="#addressing-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Nodes
+        Addressing Plan
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Nodes">
+    <nav class="md-nav" aria-label="Addressing Plan">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spines" class="md-nav__link">
+  <a href="#management-network" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Spines
+        Management Network
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#leafs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Leafs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#hosts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Hosts
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topology" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Topology
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#underlay-overlay" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Underlay &amp; Overlay
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Underlay &amp; Overlay">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#underlay" class="md-nav__link">
@@ -529,10 +479,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#overlay" class="md-nav__link">
+  <a href="#overlay-loopbacks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overlay
+        Overlay Loopbacks
       
     </span>
   </a>
@@ -545,38 +495,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#span-traffic-tap" class="md-nav__link">
+  <a href="#bgp-asn-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SPAN / Traffic Tap
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="SPAN / Traffic Tap">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-eos-span-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example EOS SPAN config
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation
+        BGP ASN Plan
       
     </span>
   </a>
@@ -584,10 +506,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#tenant-service-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes
+        Tenant Service Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#host-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Host Placement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-fabric-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Fabric Works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-eos-constructs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key EOS Constructs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-plane-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control-Plane Diagram
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-layout-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Layout Notes
       
     </span>
   </a>
@@ -668,7 +645,7 @@
   <span class="md-ellipsis">
     
   
-    Operations
+    Deep Dives
   
 
     
@@ -681,121 +658,6 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Operations
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../operations/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy & Destroy
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Troubleshooting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deep Dives
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -847,7 +709,150 @@
   <span class="md-ellipsis">
     
   
-    ntopng Usage
+    Traffic Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy & Destroy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
   
 
     
@@ -895,10 +900,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#topology-roles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Topology Roles
       
     </span>
   </a>
@@ -906,77 +911,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nodes" class="md-nav__link">
+  <a href="#addressing-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Nodes
+        Addressing Plan
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Nodes">
+    <nav class="md-nav" aria-label="Addressing Plan">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spines" class="md-nav__link">
+  <a href="#management-network" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Spines
+        Management Network
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#leafs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Leafs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#hosts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Hosts
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topology" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Topology
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#underlay-overlay" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Underlay &amp; Overlay
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Underlay &amp; Overlay">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#underlay" class="md-nav__link">
@@ -990,10 +945,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#overlay" class="md-nav__link">
+  <a href="#overlay-loopbacks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overlay
+        Overlay Loopbacks
       
     </span>
   </a>
@@ -1006,38 +961,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#span-traffic-tap" class="md-nav__link">
+  <a href="#bgp-asn-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SPAN / Traffic Tap
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="SPAN / Traffic Tap">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-eos-span-config" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example EOS SPAN config
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation
+        BGP ASN Plan
       
     </span>
   </a>
@@ -1045,10 +972,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#tenant-service-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes
+        Tenant Service Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#host-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Host Placement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-fabric-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Fabric Works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-eos-constructs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key EOS Constructs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-plane-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control-Plane Diagram
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-layout-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository Layout Notes
       
     </span>
   </a>
@@ -1073,162 +1055,380 @@
 
 
 <h1 id="fabric-lab">Fabric Lab<a class="headerlink" href="#fabric-lab" title="Permanent link">&para;</a></h1>
-<p>This page documents the <strong>EVPN/VXLAN fabric lab</strong> defined in <code>topology.fabric.yaml</code>.</p>
-<hr />
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The fabric lab implements a <strong>Clos-style EVPN/VXLAN fabric</strong> using Arista cEOS:</p>
-<ul>
-<li><strong>2× Spines</strong> acting as EVPN route servers</li>
-<li><strong>4× Leafs</strong> acting as VXLAN VTEPs</li>
-<li><strong>2× Linux hosts</strong> for traffic generation</li>
-<li><strong>Anycast gateway (VARP)</strong> for VLAN 10</li>
-<li><strong>SPAN tap</strong> exporting real traffic to the management lab</li>
-</ul>
-<hr />
-<h2 id="nodes">Nodes<a class="headerlink" href="#nodes" title="Permanent link">&para;</a></h2>
-<h3 id="spines">Spines<a class="headerlink" href="#spines" title="Permanent link">&para;</a></h3>
+<p>This page describes the exact VXLAN/EVPN fabric built in <code>topology.fabric.yaml</code> and the EOS startup configurations under <code>configs/fabric/</code>.</p>
+<h2 id="topology-roles">Topology Roles<a class="headerlink" href="#topology-roles" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Node</th>
 <th>Role</th>
-<th>Notes</th>
+<th>Control Plane</th>
+<th>Data Plane</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>spine1</code></td>
-<td>EVPN route server</td>
-<td>eBGP underlay</td>
+<td>spine</td>
+<td>underlay eBGP + EVPN transit</td>
+<td>no VTEP function</td>
 </tr>
 <tr>
 <td><code>spine2</code></td>
-<td>EVPN route server</td>
-<td>eBGP underlay</td>
+<td>spine</td>
+<td>underlay eBGP + EVPN transit</td>
+<td>no VTEP function</td>
+</tr>
+<tr>
+<td><code>leaf1</code></td>
+<td>access/VTEP leaf</td>
+<td>underlay eBGP + EVPN</td>
+<td>host1 attachment, VARP gateway</td>
+</tr>
+<tr>
+<td><code>leaf2</code></td>
+<td>transit/VTEP leaf</td>
+<td>underlay eBGP + EVPN</td>
+<td>L2 VNI membership only</td>
+</tr>
+<tr>
+<td><code>leaf3</code></td>
+<td>transit/VTEP leaf</td>
+<td>underlay eBGP + EVPN</td>
+<td>L2 VNI membership only</td>
+</tr>
+<tr>
+<td><code>leaf4</code></td>
+<td>access/VTEP leaf</td>
+<td>underlay eBGP + EVPN</td>
+<td>host2 attachment, VARP gateway</td>
+</tr>
+<tr>
+<td><code>host1</code></td>
+<td>endpoint</td>
+<td>static Linux config</td>
+<td>traffic source</td>
+</tr>
+<tr>
+<td><code>host2</code></td>
+<td>endpoint</td>
+<td>static Linux config</td>
+<td>traffic sink / <code>iperf3</code> server</td>
 </tr>
 </tbody>
 </table>
-<h3 id="leafs">Leafs<a class="headerlink" href="#leafs" title="Permanent link">&para;</a></h3>
+<h2 id="addressing-plan">Addressing Plan<a class="headerlink" href="#addressing-plan" title="Permanent link">&para;</a></h2>
+<h3 id="management-network">Management Network<a class="headerlink" href="#management-network" title="Permanent link">&para;</a></h3>
+<p>All devices sit on the containerlab management network <code>clab-mgmt</code>.</p>
 <table>
 <thead>
 <tr>
 <th>Node</th>
-<th>Role</th>
-<th>Notes</th>
+<th>Mgmt IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spine1</code></td>
+<td><code>172.20.20.11/24</code></td>
+</tr>
+<tr>
+<td><code>spine2</code></td>
+<td><code>172.20.20.12/24</code></td>
+</tr>
+<tr>
+<td><code>leaf1</code></td>
+<td><code>172.20.20.21/24</code></td>
+</tr>
+<tr>
+<td><code>leaf2</code></td>
+<td><code>172.20.20.22/24</code></td>
+</tr>
+<tr>
+<td><code>leaf3</code></td>
+<td><code>172.20.20.23/24</code></td>
+</tr>
+<tr>
+<td><code>leaf4</code></td>
+<td><code>172.20.20.24/24</code></td>
+</tr>
+<tr>
+<td><code>host1</code></td>
+<td><code>172.20.20.101/24</code></td>
+</tr>
+<tr>
+<td><code>host2</code></td>
+<td><code>172.20.20.102/24</code></td>
+</tr>
+</tbody>
+</table>
+<p>All EOS devices install <code>ip route vrf MGMT 0.0.0.0/0 172.20.20.1</code>.</p>
+<h3 id="underlay">Underlay<a class="headerlink" href="#underlay" title="Permanent link">&para;</a></h3>
+<p>The underlay uses routed /31 links and eBGP. There is no IGP and no MLAG.</p>
+<table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Leaf Side</th>
+<th>Spine Side</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>leaf1 &lt;-&gt; spine1</code></td>
+<td><code>172.16.0.0/31</code></td>
+<td><code>172.16.0.1/31</code></td>
+</tr>
+<tr>
+<td><code>leaf1 &lt;-&gt; spine2</code></td>
+<td><code>172.16.0.4/31</code></td>
+<td><code>172.16.0.5/31</code></td>
+</tr>
+<tr>
+<td><code>leaf2 &lt;-&gt; spine1</code></td>
+<td><code>172.16.0.8/31</code></td>
+<td><code>172.16.0.9/31</code></td>
+</tr>
+<tr>
+<td><code>leaf2 &lt;-&gt; spine2</code></td>
+<td><code>172.16.0.12/31</code></td>
+<td><code>172.16.0.13/31</code></td>
+</tr>
+<tr>
+<td><code>leaf3 &lt;-&gt; spine1</code></td>
+<td><code>172.16.0.16/31</code></td>
+<td><code>172.16.0.17/31</code></td>
+</tr>
+<tr>
+<td><code>leaf3 &lt;-&gt; spine2</code></td>
+<td><code>172.16.0.20/31</code></td>
+<td><code>172.16.0.21/31</code></td>
+</tr>
+<tr>
+<td><code>leaf4 &lt;-&gt; spine1</code></td>
+<td><code>172.16.0.24/31</code></td>
+<td><code>172.16.0.25/31</code></td>
+</tr>
+<tr>
+<td><code>leaf4 &lt;-&gt; spine2</code></td>
+<td><code>172.16.0.28/31</code></td>
+<td><code>172.16.0.29/31</code></td>
+</tr>
+</tbody>
+</table>
+<p>All routed fabric links use <code>mtu 9214</code>. That matters because VXLAN adds overhead and the design intentionally keeps the fabric jumbo-clean.</p>
+<h3 id="overlay-loopbacks">Overlay Loopbacks<a class="headerlink" href="#overlay-loopbacks" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Loopback0</th>
+<th>Loopback1</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spine1</code></td>
+<td><code>10.0.0.1/32</code></td>
+<td>none</td>
+<td>EVPN BGP endpoint</td>
+</tr>
+<tr>
+<td><code>spine2</code></td>
+<td><code>10.0.0.2/32</code></td>
+<td>none</td>
+<td>EVPN BGP endpoint</td>
+</tr>
+<tr>
+<td><code>leaf1</code></td>
+<td><code>10.0.0.11/32</code></td>
+<td><code>10.0.1.11/32</code></td>
+<td>overlay peering / VTEP source</td>
+</tr>
+<tr>
+<td><code>leaf2</code></td>
+<td><code>10.0.0.12/32</code></td>
+<td><code>10.0.1.12/32</code></td>
+<td>overlay peering / VTEP source</td>
+</tr>
+<tr>
+<td><code>leaf3</code></td>
+<td><code>10.0.0.13/32</code></td>
+<td><code>10.0.1.13/32</code></td>
+<td>overlay peering / VTEP source</td>
+</tr>
+<tr>
+<td><code>leaf4</code></td>
+<td><code>10.0.0.14/32</code></td>
+<td><code>10.0.1.14/32</code></td>
+<td>overlay peering / VTEP source</td>
+</tr>
+</tbody>
+</table>
+<p>The pattern in this lab is deliberate:</p>
+<ul>
+<li><code>Loopback0</code> is the stable BGP peering identity.</li>
+<li><code>Loopback1</code> is the VXLAN source interface on <code>Vxlan1</code>.</li>
+</ul>
+<p>This keeps the EVPN peering endpoint separate from the VTEP source address, which is a useful mental model when debugging route resolution and encapsulation.</p>
+<h2 id="bgp-asn-plan">BGP ASN Plan<a class="headerlink" href="#bgp-asn-plan" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>ASN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spine1</code>, <code>spine2</code></td>
+<td><code>65000</code></td>
+</tr>
+<tr>
+<td><code>leaf1</code></td>
+<td><code>65101</code></td>
+</tr>
+<tr>
+<td><code>leaf2</code></td>
+<td><code>65102</code></td>
+</tr>
+<tr>
+<td><code>leaf3</code></td>
+<td><code>65103</code></td>
+</tr>
+<tr>
+<td><code>leaf4</code></td>
+<td><code>65104</code></td>
+</tr>
+</tbody>
+</table>
+<p>The underlay is eBGP leaf-to-spine. The overlay is also eBGP leaf-to-spine, with EVPN enabled between leaf <code>Loopback0</code> and spine <code>Loopback0</code> addresses using <code>ebgp-multihop 3</code>.</p>
+<h2 id="tenant-service-model">Tenant Service Model<a class="headerlink" href="#tenant-service-model" title="Permanent link">&para;</a></h2>
+<p>The current service is one L2VNI:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VLAN</td>
+<td><code>10</code></td>
+</tr>
+<tr>
+<td>VLAN name</td>
+<td><code>TENANT10</code></td>
+</tr>
+<tr>
+<td>VNI</td>
+<td><code>10010</code></td>
+</tr>
+<tr>
+<td>Gateway IP</td>
+<td><code>192.168.10.1/24</code></td>
+</tr>
+<tr>
+<td>Anycast MAC</td>
+<td><code>00:1c:73:00:00:10</code></td>
+</tr>
+<tr>
+<td>Route-target</td>
+<td><code>65000:10010</code></td>
+</tr>
+</tbody>
+</table>
+<p>Per-leaf route distinguishers are unique:</p>
+<table>
+<thead>
+<tr>
+<th>Leaf</th>
+<th>RD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>leaf1</code></td>
-<td>VTEP + SPAN source</td>
-<td>SPAN destination on <code>Ethernet5</code></td>
+<td><code>10.0.0.11:10010</code></td>
 </tr>
 <tr>
 <td><code>leaf2</code></td>
-<td>VTEP</td>
-<td>—</td>
+<td><code>10.0.0.12:10010</code></td>
 </tr>
 <tr>
 <td><code>leaf3</code></td>
-<td>VTEP</td>
-<td>—</td>
+<td><code>10.0.0.13:10010</code></td>
 </tr>
 <tr>
 <td><code>leaf4</code></td>
-<td>VTEP</td>
-<td>Anycast gateway peer</td>
+<td><code>10.0.0.14:10010</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="hosts">Hosts<a class="headerlink" href="#hosts" title="Permanent link">&para;</a></h3>
+<p>Only <code>leaf1</code> and <code>leaf4</code> instantiate the <code>Vlan10</code> SVI with <code>ip address virtual 192.168.10.1/24</code>. <code>leaf2</code> and <code>leaf3</code> still participate in the MAC-VRF and VNI, but they do not provide gateway function. That is a good choice for lab clarity because it separates "member of the broadcast domain" from "gateway participant."</p>
+<h2 id="host-placement">Host Placement<a class="headerlink" href="#host-placement" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Host</th>
-<th>Attached To</th>
-<th>IP</th>
+<th>Attachment</th>
+<th>Data IP</th>
+<th>Default Gateway</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>host1</code></td>
-<td><code>leaf1:eth10</code></td>
-<td>192.168.10.101/24</td>
+<td><code>leaf1:Ethernet10</code></td>
+<td><code>192.168.10.101/24</code></td>
+<td><code>192.168.10.1</code></td>
 </tr>
 <tr>
 <td><code>host2</code></td>
-<td><code>leaf4:eth10</code></td>
-<td>192.168.10.102/24</td>
+<td><code>leaf4:Ethernet10</code></td>
+<td><code>192.168.10.102/24</code></td>
+<td><code>192.168.10.1</code></td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="topology">Topology<a class="headerlink" href="#topology" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
-  spine1 --- leaf1
-  spine1 --- leaf2
-  spine1 --- leaf3
-  spine1 --- leaf4
+<p><code>host2</code> runs <code>iperf3 -s -D</code>. In the combined topology file, <code>host1</code> also starts a repeated <code>iperf3</code> client loop after reachability is established. That is useful if you want continuous traffic while observing EVPN, syslog, and dashboards.</p>
+<h2 id="why-this-fabric-works">Why This Fabric Works<a class="headerlink" href="#why-this-fabric-works" title="Permanent link">&para;</a></h2>
+<p>The forwarding dependency chain is:</p>
+<ol>
+<li>Underlay BGP must carry reachability to all loopbacks.</li>
+<li>EVPN sessions must establish between each leaf and both spines.</li>
+<li>Type-3 routes must advertise VNI membership.</li>
+<li>Local MAC/IP learning on the access leaf must be exported as Type-2.</li>
+<li>Remote leafs must install the MAC/IP route and map it to the correct remote VTEP.</li>
+<li>VXLAN encapsulation must use a reachable source/destination VTEP pair.</li>
+</ol>
+<p>If any of those conditions fail, the fabric breaks in a way that is usually easy to classify once you know which stage you are in.</p>
+<h2 id="key-eos-constructs">Key EOS Constructs<a class="headerlink" href="#key-eos-constructs" title="Permanent link">&para;</a></h2>
+<p>The design hinges on a few EOS statements repeated across the configs:</p>
+<ul>
+<li><code>service routing protocols model multi-agent</code></li>
+<li><code>ip routing</code></li>
+<li><code>interface Vxlan1</code></li>
+<li><code>vxlan source-interface Loopback1</code></li>
+<li><code>router bgp &lt;asn&gt;</code></li>
+<li><code>address-family evpn</code></li>
+<li><code>vlan 10 ... redistribute learned</code></li>
+<li><code>ip address virtual 192.168.10.1/24</code></li>
+</ul>
+<p>The <code>redistribute learned</code> statement under the BGP VLAN context is especially important. It is what allows locally learned MAC/IP state in that MAC-VRF to be advertised into EVPN.</p>
+<h2 id="control-plane-diagram">Control-Plane Diagram<a class="headerlink" href="#control-plane-diagram" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+  host1["host1\n192.168.10.101"] --&gt; leaf1["leaf1\nVTEP 10.0.1.11"]
+  host2["host2\n192.168.10.102"] --&gt; leaf4["leaf4\nVTEP 10.0.1.14"]
 
-  spine2 --- leaf1
-  spine2 --- leaf2
-  spine2 --- leaf3
-  spine2 --- leaf4
-
-  host1 --- leaf1
-  host2 --- leaf4
-
-  leaf1 -- SPAN dest --&gt; tap((br-fabric-tap))</code></pre>
-<hr />
-<h2 id="underlay-overlay">Underlay &amp; Overlay<a class="headerlink" href="#underlay-overlay" title="Permanent link">&para;</a></h2>
-<h3 id="underlay">Underlay<a class="headerlink" href="#underlay" title="Permanent link">&para;</a></h3>
-<ul>
-<li>eBGP between leafs and spines</li>
-<li>Each leaf has uplinks to both spines</li>
-<li>Point-to-point routed interfaces</li>
-</ul>
-<h3 id="overlay">Overlay<a class="headerlink" href="#overlay" title="Permanent link">&para;</a></h3>
-<ul>
-<li>EVPN address family</li>
-<li>VXLAN encapsulation</li>
-<li>VLAN 10 stretched across leafs</li>
-<li>Anycast gateway using VARP on <code>leaf1</code> and <code>leaf4</code></li>
-</ul>
-<hr />
-<h2 id="span-traffic-tap">SPAN / Traffic Tap<a class="headerlink" href="#span-traffic-tap" title="Permanent link">&para;</a></h2>
-<p>To export <strong>real fabric traffic</strong> to ntopng:</p>
-<ul>
-<li><code>leaf1:Ethernet5</code> is connected to the host Linux bridge <code>br-fabric-tap</code></li>
-<li>Traffic is mirrored using EOS SPAN</li>
-</ul>
-<h3 id="example-eos-span-config">Example EOS SPAN config<a class="headerlink" href="#example-eos-span-config" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>monitor session 1
-  source interface Ethernet1
-  source interface Ethernet2
-  source interface Ethernet10
-  destination interface Ethernet5
-</code></pre></div>
-<p>You may also mirror:
-- VLAN 10
-- Port-Channels
-- All interfaces</p>
-<blockquote>
-<p>⚠️ Without SPAN configured, ntopng will see <strong>no traffic</strong>.</p>
-</blockquote>
-<hr />
-<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
-<p>Useful checks on leafs/spines:</p>
-<div class="highlight"><pre><span></span><code>show<span class="w"> </span>bgp<span class="w"> </span>evpn<span class="w"> </span>summary
-show<span class="w"> </span>vxlan<span class="w"> </span>vtep
-show<span class="w"> </span>ip<span class="w"> </span>route
-</code></pre></div>
-<hr />
-<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
-<ul>
-<li>The fabric lab can be deployed and destroyed independently</li>
-<li>Management services are <strong>not</strong> part of this lab</li>
-<li><code>br-fabric-tap</code> must exist before deployment</li>
-</ul>
+  leaf1 &lt;-- eBGP IPv4 / EVPN --&gt; spine1["spine1\nAS 65000"]
+  leaf1 &lt;-- eBGP IPv4 / EVPN --&gt; spine2["spine2\nAS 65000"]
+  leaf4 &lt;-- eBGP IPv4 / EVPN --&gt; spine1
+  leaf4 &lt;-- eBGP IPv4 / EVPN --&gt; spine2</code></pre>
+<h2 id="repository-layout-notes">Repository Layout Notes<a class="headerlink" href="#repository-layout-notes" title="Permanent link">&para;</a></h2>
+<p>The fabric definition in <code>topology.fabric.yaml</code> is the cleanest source for understanding the core VXLAN/EVPN network. The older <code>ml-clab-topo.yml</code> includes additional telemetry and packet-analysis services inline and is still worth reading if you want the original all-in-one operational intent.</p>
 
 
 

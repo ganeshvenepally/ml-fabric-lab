@@ -6,12 +6,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Split Fabric & Management containerlab labs with real traffic tap.">
+        <meta name="description" content="Deep documentation for the VXLAN/EVPN fabric, staged deployment workflow, and validation procedures.">
       
       
       
       
-        <link rel="prev" href="../troubleshooting/">
+        <link rel="prev" href="../mgmt/">
       
       
         <link rel="next" href="../ntopng/">
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#evpn-control-plane-deep-dive" class="md-skip">
+        <a href="#evpn-control-plane" class="md-skip">
           Skip to content
         </a>
       
@@ -212,26 +212,6 @@
   
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../operations/" class="md-tabs__link">
-          
-  
-  
-  Operations
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -243,6 +223,26 @@
   
   
   Deep Dives
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../operations/" class="md-tabs__link">
+          
+  
+  
+  Operations
 
         </a>
       </li>
@@ -429,121 +429,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operations
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Operations
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../operations/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy & Destroy
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Troubleshooting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -565,10 +450,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -586,8 +471,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -664,10 +549,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scope-of-this-document" class="md-nav__link">
+  <a href="#technology-stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scope of This Document
+        Technology Stack
       
     </span>
   </a>
@@ -675,10 +560,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#high-level-control-plane-flow" class="md-nav__link">
+  <a href="#why-evpn-instead-of-flood-and-learn-vxlan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        High-Level Control Plane Flow
+        Why EVPN Instead of Flood-and-Learn VXLAN
       
     </span>
   </a>
@@ -686,22 +571,88 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-underlay-ebgp-session-establishment" class="md-nav__link">
+  <a href="#underlay-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Underlay eBGP Session Establishment
+        Underlay Model
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Underlay eBGP Session Establishment">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay-peering-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay Peering Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-spines-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Spines Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-leafs-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Leafs Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#route-types-that-matter-in-this-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Route Types That Matter In This Lab
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Route Types That Matter In This Lab">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#validation-commands-eos" class="md-nav__link">
+  <a href="#type-2-macip-advertisement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Commands (EOS)
+        Type-2 MAC/IP Advertisement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-3-inclusive-multicast-ethernet-tag-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type-3 Inclusive Multicast Ethernet Tag Route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-5-ip-prefix-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type-5 IP Prefix Route
       
     </span>
   </a>
@@ -714,166 +665,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-evpn-address-family-establishment" class="md-nav__link">
+  <a href="#anycast-gateway-behavior" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. EVPN Address-Family Establishment
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. EVPN Address-Family Establishment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-type-3-imet-means" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Type-3 (IMET) Means
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-host-learning-and-evpn-type-2-routes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Host Learning and EVPN Type-2 Routes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Host Learning and EVPN Type-2 Routes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-type-2-routes-carry" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Type-2 Routes Carry
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation-commands_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-vxlan-data-plane-forwarding" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. VXLAN Data Plane Forwarding
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. VXLAN Data Plane Forwarding">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#outer-vs-inner-headers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Outer vs Inner Headers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-failure-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Failure Patterns
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Failure Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#underlay-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Underlay Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evpn-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-plane-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Plane Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-troubleshooting-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Troubleshooting Checklist
+        Anycast Gateway Behavior
       
     </span>
   </a>
@@ -881,10 +676,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-for-this-lab" class="md-nav__link">
+  <a href="#end-to-end-control-plane-sequence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes for This Lab
+        End-to-End Control-Plane Sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-plane-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Plane Walk
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-lab-is-good-for-deep-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Lab Is Good For Deep Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eos-commands-that-expose-each-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EOS Commands That Expose Each Layer
       
     </span>
   </a>
@@ -914,7 +742,150 @@
   <span class="md-ellipsis">
     
   
-    ntopng Usage
+    Traffic Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy & Destroy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
   
 
     
@@ -962,10 +933,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scope-of-this-document" class="md-nav__link">
+  <a href="#technology-stack" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scope of This Document
+        Technology Stack
       
     </span>
   </a>
@@ -973,10 +944,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#high-level-control-plane-flow" class="md-nav__link">
+  <a href="#why-evpn-instead-of-flood-and-learn-vxlan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        High-Level Control Plane Flow
+        Why EVPN Instead of Flood-and-Learn VXLAN
       
     </span>
   </a>
@@ -984,22 +955,88 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-underlay-ebgp-session-establishment" class="md-nav__link">
+  <a href="#underlay-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Underlay eBGP Session Establishment
+        Underlay Model
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Underlay eBGP Session Establishment">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overlay-peering-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlay Peering Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-spines-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Spines Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-leafs-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Leafs Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#route-types-that-matter-in-this-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Route Types That Matter In This Lab
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Route Types That Matter In This Lab">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#validation-commands-eos" class="md-nav__link">
+  <a href="#type-2-macip-advertisement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Commands (EOS)
+        Type-2 MAC/IP Advertisement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-3-inclusive-multicast-ethernet-tag-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type-3 Inclusive Multicast Ethernet Tag Route
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-5-ip-prefix-route" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type-5 IP Prefix Route
       
     </span>
   </a>
@@ -1012,166 +1049,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-evpn-address-family-establishment" class="md-nav__link">
+  <a href="#anycast-gateway-behavior" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. EVPN Address-Family Establishment
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. EVPN Address-Family Establishment">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-type-3-imet-means" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Type-3 (IMET) Means
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-host-learning-and-evpn-type-2-routes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Host Learning and EVPN Type-2 Routes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Host Learning and EVPN Type-2 Routes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#what-type-2-routes-carry" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What Type-2 Routes Carry
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation-commands_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Validation Commands
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-vxlan-data-plane-forwarding" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. VXLAN Data Plane Forwarding
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. VXLAN Data Plane Forwarding">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#outer-vs-inner-headers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Outer vs Inner Headers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-failure-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Failure Patterns
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Common Failure Patterns">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#underlay-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Underlay Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evpn-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#data-plane-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data Plane Issues
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-troubleshooting-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Troubleshooting Checklist
+        Anycast Gateway Behavior
       
     </span>
   </a>
@@ -1179,10 +1060,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-for-this-lab" class="md-nav__link">
+  <a href="#end-to-end-control-plane-sequence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes for This Lab
+        End-to-End Control-Plane Sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-plane-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Plane Walk
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-lab-is-good-for-deep-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Lab Is Good For Deep Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eos-commands-that-expose-each-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EOS Commands That Expose Each Layer
       
     </span>
   </a>
@@ -1206,170 +1120,239 @@
 
 
 
-<h1 id="evpn-control-plane-deep-dive">EVPN Control Plane (Deep Dive)<a class="headerlink" href="#evpn-control-plane-deep-dive" title="Permanent link">&para;</a></h1>
-<p>This document provides a <strong>complete, self-contained explanation</strong> of the EVPN/VXLAN
-control plane used in this lab. It is intended to be readable on its own and suitable
-for publication via MkDocs or GitHub Pages.</p>
-<hr />
-<h2 id="scope-of-this-document">Scope of This Document<a class="headerlink" href="#scope-of-this-document" title="Permanent link">&para;</a></h2>
-<p>This lab implements:
-- eBGP underlay (IPv4 unicast)
-- EVPN overlay (AFI/SAFI EVPN)
-- VXLAN data plane
-- Spine-based EVPN route-server design</p>
-<p>The sequence below matches what you will observe on Arista EOS using
-<code>show bgp</code>, <code>show vxlan</code>, and related commands.</p>
-<hr />
-<h2 id="high-level-control-plane-flow">High-Level Control Plane Flow<a class="headerlink" href="#high-level-control-plane-flow" title="Permanent link">&para;</a></h2>
+<h1 id="evpn-control-plane">EVPN Control Plane<a class="headerlink" href="#evpn-control-plane" title="Permanent link">&para;</a></h1>
+<p>This page explains the VXLAN/EVPN technology used in the lab and maps it back to the actual EOS configuration choices in this repository.</p>
+<h2 id="technology-stack">Technology Stack<a class="headerlink" href="#technology-stack" title="Permanent link">&para;</a></h2>
+<p>The fabric is built from three layers that must all work together:</p>
 <ol>
-<li>Physical links come up</li>
-<li>Underlay eBGP sessions establish</li>
-<li>EVPN address-family sessions establish</li>
-<li>VTEPs advertise VNIs (Type-3)</li>
-<li>Hosts trigger MAC/IP advertisements (Type-2)</li>
-<li>Data plane forwarding begins using VXLAN</li>
+<li>Underlay IP reachability</li>
+<li>EVPN control plane</li>
+<li>VXLAN encapsulated data plane</li>
 </ol>
-<hr />
-<h2 id="1-underlay-ebgp-session-establishment">1. Underlay eBGP Session Establishment<a class="headerlink" href="#1-underlay-ebgp-session-establishment" title="Permanent link">&para;</a></h2>
-<p>The underlay provides IP reachability between VTEPs.</p>
-<pre class="mermaid"><code>sequenceDiagram
-  autonumber
-  participant L as Leaf (e.g. leaf1)
-  participant S as Spine (e.g. spine1)
-
-  Note over L,S: Ethernet interface is UP, IP configured
-  L-&gt;&gt;S: TCP SYN (port 179)
-  S--&gt;&gt;L: TCP SYN/ACK
-  L-&gt;&gt;S: TCP ACK
-  L-&gt;&gt;S: BGP OPEN (ASN, router-id, capabilities)
-  S--&gt;&gt;L: BGP OPEN
-  L-&gt;&gt;S: BGP KEEPALIVE
-  S--&gt;&gt;L: BGP KEEPALIVE
-  Note over L,S: Underlay BGP session = Established
-  L-&gt;&gt;S: UPDATE (IPv4 unicast routes: loopbacks, P2P)
-  S--&gt;&gt;L: UPDATE (IPv4 unicast routes)</code></pre>
-<h3 id="validation-commands-eos">Validation Commands (EOS)<a class="headerlink" href="#validation-commands-eos" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>show ip bgp summary
-show ip route
-show interfaces status
-</code></pre></div>
-<hr />
-<h2 id="2-evpn-address-family-establishment">2. EVPN Address-Family Establishment<a class="headerlink" href="#2-evpn-address-family-establishment" title="Permanent link">&para;</a></h2>
-<p>Once underlay BGP is established, the EVPN AFI/SAFI becomes active.</p>
-<pre class="mermaid"><code>sequenceDiagram
-  autonumber
-  participant L as Leaf (VTEP)
-  participant S as Spine (EVPN Route Server)
-
-  Note over L,S: Underlay BGP already Established
-  L-&gt;&gt;S: UPDATE (Enable AFI/SAFI EVPN)
-  S--&gt;&gt;L: UPDATE (EVPN policy + RS behavior)
-  Note over L,S: EVPN neighbors show Estab
-  L-&gt;&gt;S: EVPN Type-3 (IMET) – VNI membership
-  S--&gt;&gt;L: Reflected Type-3 routes from other VTEPs</code></pre>
-<h3 id="what-type-3-imet-means">What Type-3 (IMET) Means<a class="headerlink" href="#what-type-3-imet-means" title="Permanent link">&para;</a></h3>
+<p>If you are debugging, never collapse those layers into one mental model. In this lab:</p>
 <ul>
-<li>Signals that a VTEP participates in a VNI</li>
-<li>Enables BUM (broadcast, unknown unicast, multicast) handling</li>
-<li>Required before host MAC learning works correctly</li>
+<li>Underlay is IPv4 eBGP over routed point-to-point links.</li>
+<li>Overlay is BGP EVPN over loopback peering.</li>
+<li>Data plane is VXLAN sourced from <code>Loopback1</code>.</li>
 </ul>
-<h3 id="validation-commands">Validation Commands<a class="headerlink" href="#validation-commands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>show bgp evpn summary
-show bgp evpn route-type imet
+<h2 id="why-evpn-instead-of-flood-and-learn-vxlan">Why EVPN Instead of Flood-and-Learn VXLAN<a class="headerlink" href="#why-evpn-instead-of-flood-and-learn-vxlan" title="Permanent link">&para;</a></h2>
+<p>Pure data-plane VXLAN flood-and-learn can move frames, but it has bad operational properties:</p>
+<ul>
+<li>remote MAC discovery depends on flooding</li>
+<li>unknown unicast handling is noisier</li>
+<li>control-plane visibility is weaker</li>
+<li>troubleshooting is less deterministic</li>
+</ul>
+<p>EVPN fixes that by carrying MAC/IP reachability in BGP. In this lab, the result is:</p>
+<ul>
+<li>deterministic remote MAC/IP learning</li>
+<li>explicit VNI membership signaling</li>
+<li>clear observability through <code>show bgp evpn ...</code></li>
+<li>a control plane you can inspect before user traffic ever crosses the fabric</li>
+</ul>
+<h2 id="underlay-model">Underlay Model<a class="headerlink" href="#underlay-model" title="Permanent link">&para;</a></h2>
+<p>The underlay is simple on purpose:</p>
+<ul>
+<li>every leaf has two routed uplinks, one to each spine</li>
+<li>no L2 adjacency in the fabric core</li>
+<li>no STP dependency in the spine-leaf domain</li>
+<li>no IGP, only eBGP</li>
+</ul>
+<p>Each leaf advertises:</p>
+<ul>
+<li><code>Loopback0</code></li>
+<li><code>Loopback1</code></li>
+</ul>
+<p>Each spine advertises:</p>
+<ul>
+<li>its own <code>Loopback0</code></li>
+</ul>
+<p>That is enough for:</p>
+<ul>
+<li>overlay BGP sessions to the spine loopbacks</li>
+<li>VTEP source reachability between leafs</li>
+</ul>
+<h2 id="overlay-peering-model">Overlay Peering Model<a class="headerlink" href="#overlay-peering-model" title="Permanent link">&para;</a></h2>
+<p>The overlay neighbors are:</p>
+<ul>
+<li><code>leafX Loopback0 -&gt; spine1 Loopback0</code></li>
+<li><code>leafX Loopback0 -&gt; spine2 Loopback0</code></li>
+</ul>
+<p>The relevant EOS pattern is:</p>
+<div class="highlight"><pre><span></span><code>neighbor OVERLAY update-source Loopback0
+neighbor OVERLAY ebgp-multihop 3
+neighbor OVERLAY send-community extended
+address-family evpn
+   neighbor OVERLAY activate
 </code></pre></div>
-<hr />
-<h2 id="3-host-learning-and-evpn-type-2-routes">3. Host Learning and EVPN Type-2 Routes<a class="headerlink" href="#3-host-learning-and-evpn-type-2-routes" title="Permanent link">&para;</a></h2>
-<p>When a host sends traffic, the leaf learns the MAC/IP and advertises it.</p>
-<pre class="mermaid"><code>sequenceDiagram
-  autonumber
-  participant H1 as Host1
-  participant L1 as Leaf1 (VTEP)
-  participant RS as Spine (EVPN RS)
-  participant L4 as Leaf4 (VTEP)
-  participant H2 as Host2
-
-  H1-&gt;&gt;L1: ARP who-has 192.168.10.102?
-  L1-&gt;&gt;L1: Learn H1 MAC on access port (VLAN 10 / VNI)
-  L1-&gt;&gt;RS: EVPN Type-2 (MAC/IP for H1)
-  RS--&gt;&gt;L4: Reflect Type-2 (H1)
-  L4-&gt;&gt;L4: Install remote MAC/IP → VTEP (Leaf1)
-  L4-&gt;&gt;RS: EVPN Type-2 (MAC/IP for H2)
-  RS--&gt;&gt;L1: Reflect Type-2 (H2)
-  L1-&gt;&gt;L1: Install remote MAC/IP → VTEP (Leaf4)</code></pre>
-<h3 id="what-type-2-routes-carry">What Type-2 Routes Carry<a class="headerlink" href="#what-type-2-routes-carry" title="Permanent link">&para;</a></h3>
+<p>Why this matters:</p>
+<ul>
+<li><code>update-source Loopback0</code> gives a stable peering identity independent of a physical link</li>
+<li><code>ebgp-multihop 3</code> is required because the BGP peer is not directly connected</li>
+<li><code>send-community extended</code> is required because EVPN depends on extended communities such as route-targets</li>
+</ul>
+<h2 id="what-the-spines-do">What the Spines Do<a class="headerlink" href="#what-the-spines-do" title="Permanent link">&para;</a></h2>
+<p>The spines are not VTEPs. They do two things:</p>
+<ul>
+<li>carry underlay reachability between leafs</li>
+<li>act as EVPN transit/redistribution points between leaf ASNs</li>
+</ul>
+<p>Operationally, you can think of them as route-server style control-plane nodes for EVPN. They never terminate tenant VLANs and never originate VXLAN encapsulated traffic on behalf of endpoints.</p>
+<h2 id="what-the-leafs-do">What the Leafs Do<a class="headerlink" href="#what-the-leafs-do" title="Permanent link">&para;</a></h2>
+<p>Each leaf does all of the edge work:</p>
+<ul>
+<li>learns local MACs on access ports</li>
+<li>participates in VLAN 10 / VNI 10010</li>
+<li>originates EVPN advertisements for learned endpoints</li>
+<li>installs remote MAC/IP entries learned through EVPN</li>
+<li>performs VXLAN encapsulation and decapsulation</li>
+</ul>
+<p>On <code>leaf1</code> and <code>leaf4</code>, the leaf also provides first-hop gateway services through VARP.</p>
+<h2 id="route-types-that-matter-in-this-lab">Route Types That Matter In This Lab<a class="headerlink" href="#route-types-that-matter-in-this-lab" title="Permanent link">&para;</a></h2>
+<h3 id="type-2-macip-advertisement">Type-2 MAC/IP Advertisement<a class="headerlink" href="#type-2-macip-advertisement" title="Permanent link">&para;</a></h3>
+<p>This is the route that matters once hosts start sending traffic.</p>
+<p>It carries:</p>
 <ul>
 <li>MAC address</li>
-<li>Optional IP address</li>
-<li>VNI</li>
-<li>Next-hop = VTEP loopback IP</li>
+<li>optional IP address</li>
+<li>VNI or Ethernet Tag context</li>
+<li>next-hop/VTEP information</li>
 </ul>
-<h3 id="validation-commands_1">Validation Commands<a class="headerlink" href="#validation-commands_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>show bgp evpn route-type mac-ip
-show mac address-table
-show ip arp
-</code></pre></div>
-<hr />
-<h2 id="4-vxlan-data-plane-forwarding">4. VXLAN Data Plane Forwarding<a class="headerlink" href="#4-vxlan-data-plane-forwarding" title="Permanent link">&para;</a></h2>
-<p>Once both sides have MAC/IP mappings, traffic is forwarded using VXLAN.</p>
+<p>In this lab, a typical flow is:</p>
+<ol>
+<li><code>host1</code> ARPs or sends any traffic</li>
+<li><code>leaf1</code> learns the source MAC on <code>Ethernet10</code></li>
+<li><code>leaf1</code> advertises a Type-2 route for that MAC/IP in VNI <code>10010</code></li>
+<li>the spines propagate that EVPN information to the other leafs</li>
+<li><code>leaf4</code> installs a remote entry pointing traffic toward <code>leaf1</code></li>
+</ol>
+<h3 id="type-3-inclusive-multicast-ethernet-tag-route">Type-3 Inclusive Multicast Ethernet Tag Route<a class="headerlink" href="#type-3-inclusive-multicast-ethernet-tag-route" title="Permanent link">&para;</a></h3>
+<p>This route signals VNI membership. Even in a unicast-only test, it is fundamental because it tells the fabric which VTEPs participate in a given broadcast domain.</p>
+<p>In practical lab terms, Type-3 proves:</p>
+<ul>
+<li>the VNI exists on the advertising leaf</li>
+<li>the remote VTEP is a member of that segment</li>
+<li>BUM handling has enough control-plane context to work</li>
+</ul>
+<h3 id="type-5-ip-prefix-route">Type-5 IP Prefix Route<a class="headerlink" href="#type-5-ip-prefix-route" title="Permanent link">&para;</a></h3>
+<p>Type-5 is not part of the current service design. This lab is focused on L2VNI extension plus anycast gateway, not distributed IP prefix advertisement for L3VNI services.</p>
+<p>That is an important scope boundary: this lab is deep on bridging and host mobility mechanics, not on full tenant routed overlays.</p>
+<h2 id="anycast-gateway-behavior">Anycast Gateway Behavior<a class="headerlink" href="#anycast-gateway-behavior" title="Permanent link">&para;</a></h2>
+<p><code>leaf1</code> and <code>leaf4</code> both configure:</p>
+<ul>
+<li><code>ip virtual-router mac-address 00:1c:73:00:00:10</code></li>
+<li><code>interface Vlan10</code></li>
+<li><code>ip address virtual 192.168.10.1/24</code></li>
+</ul>
+<p>This gives both access leafs the same default gateway identity for hosts in VLAN 10.</p>
+<p>Why it matters:</p>
+<ul>
+<li><code>host1</code> and <code>host2</code> can use the same default gateway IP</li>
+<li>the host always ARPs for a local gateway on its attached leaf</li>
+<li>first-hop symmetry stays simple</li>
+<li>the fabric can stretch L2 while still keeping gateway behavior distributed</li>
+</ul>
+<p>In this exact lab, only <code>leaf1</code> and <code>leaf4</code> need the SVI because only those two leaves have host-facing ports. <code>leaf2</code> and <code>leaf3</code> remain pure transit VTEPs for the L2VNI.</p>
+<h2 id="end-to-end-control-plane-sequence">End-to-End Control-Plane Sequence<a class="headerlink" href="#end-to-end-control-plane-sequence" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
   autonumber
-  participant L1 as Leaf1
-  participant L4 as Leaf4
-  participant H1 as Host1
-  participant H2 as Host2
+  participant L1 as leaf1
+  participant S1 as spine1
+  participant S2 as spine2
+  participant L4 as leaf4
 
-  H1-&gt;&gt;L1: Ethernet/IP packet to H2
-  L1-&gt;&gt;L1: Lookup MAC/IP → remote VTEP
-  L1-&gt;&gt;L4: VXLAN encapsulated packet (UDP/4789)
-  L4-&gt;&gt;L4: Decapsulate VXLAN
-  L4-&gt;&gt;H2: Deliver original Ethernet frame</code></pre>
-<h3 id="outer-vs-inner-headers">Outer vs Inner Headers<a class="headerlink" href="#outer-vs-inner-headers" title="Permanent link">&para;</a></h3>
+  Note over L1,L4: Underlay IPv4 BGP comes up first
+  L1-&gt;&gt;S1: advertise Lo0 and Lo1 in IPv4 unicast
+  L1-&gt;&gt;S2: advertise Lo0 and Lo1 in IPv4 unicast
+  L4-&gt;&gt;S1: advertise Lo0 and Lo1 in IPv4 unicast
+  L4-&gt;&gt;S2: advertise Lo0 and Lo1 in IPv4 unicast
+
+  Note over L1,L4: EVPN AF then establishes over loopbacks
+  L1-&gt;&gt;S1: EVPN session established
+  L1-&gt;&gt;S2: EVPN session established
+  L4-&gt;&gt;S1: EVPN session established
+  L4-&gt;&gt;S2: EVPN session established
+
+  L1-&gt;&gt;S1: Type-3 for VNI 10010
+  L1-&gt;&gt;S2: Type-3 for VNI 10010
+  L4-&gt;&gt;S1: Type-3 for VNI 10010
+  L4-&gt;&gt;S2: Type-3 for VNI 10010
+
+  Note over L1,L4: Host traffic triggers Type-2 exchange
+  L1-&gt;&gt;S1: Type-2 MAC/IP for host1
+  S1-&gt;&gt;L4: propagate Type-2 for host1
+  L4-&gt;&gt;S2: Type-2 MAC/IP for host2
+  S2-&gt;&gt;L1: propagate Type-2 for host2</code></pre>
+<h2 id="data-plane-walk">Data Plane Walk<a class="headerlink" href="#data-plane-walk" title="Permanent link">&para;</a></h2>
+<p>Once the control plane has converged, forwarding from <code>host1</code> to <code>host2</code> is:</p>
+<ol>
+<li><code>host1</code> sends an Ethernet frame toward <code>host2</code></li>
+<li><code>leaf1</code> identifies the destination MAC as remote in VNI <code>10010</code></li>
+<li><code>leaf1</code> VXLAN-encapsulates the frame using <code>Vxlan1</code></li>
+<li>the underlay forwards the outer packet to the remote VTEP</li>
+<li><code>leaf4</code> decapsulates and emits the original frame toward <code>host2</code></li>
+</ol>
+<p>The important point is that the spines forward only the outer IP packet. They are not aware of tenant MAC tables.</p>
+<h2 id="why-this-lab-is-good-for-deep-validation">Why This Lab Is Good For Deep Validation<a class="headerlink" href="#why-this-lab-is-good-for-deep-validation" title="Permanent link">&para;</a></h2>
+<p>Even though there is only one VLAN and one VNI, the lab exercises all of the important mechanics:</p>
 <ul>
-<li><strong>Inner frame</strong>: original host Ethernet/IP</li>
-<li><strong>Outer packet</strong>: IP/UDP between VTEP loopbacks (UDP port 4789)</li>
+<li>routed underlay establishment</li>
+<li>loopback reachability</li>
+<li>EVPN adjacency formation</li>
+<li>VNI membership advertisement</li>
+<li>MAC/IP export through EVPN</li>
+<li>remote endpoint installation</li>
+<li>VXLAN forwarding</li>
+<li>distributed anycast gateway behavior</li>
 </ul>
-<hr />
-<h2 id="common-failure-patterns">Common Failure Patterns<a class="headerlink" href="#common-failure-patterns" title="Permanent link">&para;</a></h2>
-<h3 id="underlay-issues">Underlay Issues<a class="headerlink" href="#underlay-issues" title="Permanent link">&para;</a></h3>
+<p>That makes it a strong base template for adding:</p>
 <ul>
-<li>Interfaces down</li>
-<li>IP addressing errors</li>
-<li>ASN mismatch</li>
-<li>TCP/179 blocked</li>
+<li>more VLANs and VNIs</li>
+<li>L3VNI and tenant VRFs</li>
+<li>Type-5 route exchange</li>
+<li>host mobility tests</li>
+<li>multitenant route-target policy</li>
 </ul>
-<h3 id="evpn-issues">EVPN Issues<a class="headerlink" href="#evpn-issues" title="Permanent link">&para;</a></h3>
-<ul>
-<li>EVPN AF not enabled</li>
-<li>Route-policy blocking EVPN routes</li>
-<li>Spine not acting as route server</li>
-<li>Missing Type-3 routes</li>
-</ul>
-<h3 id="data-plane-issues">Data Plane Issues<a class="headerlink" href="#data-plane-issues" title="Permanent link">&para;</a></h3>
-<ul>
-<li>VLAN/VNI mismatch</li>
-<li>MTU too small for VXLAN</li>
-<li>Missing loopback reachability</li>
-<li>SPAN mirroring wrong interface (for visibility)</li>
-</ul>
-<hr />
-<h2 id="quick-troubleshooting-checklist">Quick Troubleshooting Checklist<a class="headerlink" href="#quick-troubleshooting-checklist" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>show ip bgp summary
-show bgp evpn summary
-show bgp evpn route-type imet
-show bgp evpn route-type mac-ip
-show vxlan vtep
-show interfaces vxlan 1
-</code></pre></div>
-<hr />
-<h2 id="notes-for-this-lab">Notes for This Lab<a class="headerlink" href="#notes-for-this-lab" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Spines act as <strong>EVPN route servers</strong></li>
-<li>Leafs act as <strong>VXLAN VTEPs</strong></li>
-<li>Hosts generate continuous traffic to validate control + data plane</li>
-<li>SPAN on leaf1 mirrors traffic for ntopng visibility</li>
-</ul>
-<hr />
-<p><em>End of document</em></p>
+<h2 id="eos-commands-that-expose-each-layer">EOS Commands That Expose Each Layer<a class="headerlink" href="#eos-commands-that-expose-each-layer" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Commands</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>physical / interface</td>
+<td><code>show interfaces status</code>, <code>show ip interface brief</code></td>
+</tr>
+<tr>
+<td>underlay BGP</td>
+<td><code>show ip bgp summary</code>, <code>show ip route</code></td>
+</tr>
+<tr>
+<td>EVPN sessions</td>
+<td><code>show bgp evpn summary</code></td>
+</tr>
+<tr>
+<td>Type-3</td>
+<td><code>show bgp evpn route-type imet</code></td>
+</tr>
+<tr>
+<td>Type-2</td>
+<td><code>show bgp evpn route-type mac-ip</code></td>
+</tr>
+<tr>
+<td>VXLAN state</td>
+<td><code>show vxlan vtep</code>, <code>show interfaces vxlan 1</code></td>
+</tr>
+<tr>
+<td>bridge learning</td>
+<td><code>show mac address-table</code>, <code>show ip arp vlan 10</code></td>
+</tr>
+</tbody>
+</table>
+<p>Those commands are enough to correlate the theory on this page with the running lab.</p>
 
 
 

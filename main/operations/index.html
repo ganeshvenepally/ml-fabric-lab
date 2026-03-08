@@ -6,15 +6,15 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Split Fabric & Management containerlab labs with real traffic tap.">
+        <meta name="description" content="Deep documentation for the VXLAN/EVPN fabric, staged deployment workflow, and validation procedures.">
       
       
       
       
-        <link rel="prev" href="../mgmt/">
+        <link rel="prev" href="../ntopng/">
       
       
-        <link rel="next" href="../troubleshooting/">
+        <link rel="next" href="../validation/">
       
       
         
@@ -212,17 +212,15 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../evpn-control-plane/" class="md-tabs__link">
           
   
   
-  Operations
+  Deep Dives
 
         </a>
       </li>
@@ -234,15 +232,17 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../evpn-control-plane/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
-  Deep Dives
+  Operations
 
         </a>
       </li>
@@ -429,6 +429,121 @@
       
   
   
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deep Dives
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deep Dives
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evpn-control-plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EVPN Control Plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ntopng/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traffic Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -450,10 +565,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -471,8 +586,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -549,10 +664,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#script-overview" class="md-nav__link">
+  <a href="#authoritative-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Script Overview
+        Authoritative Workflow
       
     </span>
   </a>
@@ -560,22 +675,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#deploy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Deploy
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destroy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reconfigure-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reconfigure Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evpn-readiness-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EVPN Readiness Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useful-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Access
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Access">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#deploy-default" class="md-nav__link">
+  <a href="#eos-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deploy (default)
+        EOS CLI
       
     </span>
   </a>
@@ -583,10 +753,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#destroy-both-labs" class="md-nav__link">
+  <a href="#linux-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Destroy both labs
+        Linux Hosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#management-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Management Services
       
     </span>
   </a>
@@ -599,60 +780,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-happens-during-deploy" class="md-nav__link">
+  <a href="#management-stack-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Happens During Deploy
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What Happens During Deploy">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stage-1-fabric" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stage 1 – Fabric
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evpn-convergence-check" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN Convergence Check
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#stage-2-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stage 2 – Management
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environment Variables
+        Management Stack Notes
       
     </span>
   </a>
@@ -660,99 +791,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#common-operations" class="md-nav__link">
+  <a href="#recommended-day-2-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Operations
+        Recommended Day-2 Workflow
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Common Operations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#check-container-status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check container status
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check-evpn-on-a-leaf" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check EVPN on a leaf
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restart-management-lab-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Restart management lab only
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#failure-modes" class="md-nav__link">
+  <a href="#documentation-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Failure Modes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Failure Modes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#evpn-does-not-converge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN does not converge
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ntopng-sees-no-traffic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ntopng sees no traffic
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#safety-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Safety Notes
+        Documentation Publication
       
     </span>
   </a>
@@ -775,6 +828,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../troubleshooting/" class="md-nav__link">
         
   
@@ -783,121 +864,6 @@
     
   
     Troubleshooting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
-        
-          
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deep Dives
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Deep Dives
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../evpn-control-plane/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    EVPN Control Plane
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ntopng/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ntopng Usage
   
 
     
@@ -945,10 +911,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#script-overview" class="md-nav__link">
+  <a href="#authoritative-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Script Overview
+        Authoritative Workflow
       
     </span>
   </a>
@@ -956,22 +922,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#deploy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Deploy
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destroy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reconfigure-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reconfigure Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evpn-readiness-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EVPN Readiness Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#useful-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Access
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Access">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#deploy-default" class="md-nav__link">
+  <a href="#eos-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deploy (default)
+        EOS CLI
       
     </span>
   </a>
@@ -979,10 +1000,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#destroy-both-labs" class="md-nav__link">
+  <a href="#linux-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Destroy both labs
+        Linux Hosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#management-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Management Services
       
     </span>
   </a>
@@ -995,60 +1027,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-happens-during-deploy" class="md-nav__link">
+  <a href="#management-stack-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Happens During Deploy
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What Happens During Deploy">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stage-1-fabric" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stage 1 – Fabric
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#evpn-convergence-check" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN Convergence Check
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#stage-2-management" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stage 2 – Management
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#environment-variables" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Environment Variables
+        Management Stack Notes
       
     </span>
   </a>
@@ -1056,99 +1038,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#common-operations" class="md-nav__link">
+  <a href="#recommended-day-2-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Operations
+        Recommended Day-2 Workflow
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Common Operations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#check-container-status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check container status
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check-evpn-on-a-leaf" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Check EVPN on a leaf
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restart-management-lab-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Restart management lab only
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#failure-modes" class="md-nav__link">
+  <a href="#documentation-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Failure Modes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Failure Modes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#evpn-does-not-converge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        EVPN does not converge
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ntopng-sees-no-traffic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ntopng sees no traffic
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#safety-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Safety Notes
+        Documentation Publication
       
     </span>
   </a>
@@ -1173,123 +1077,167 @@
 
 
 <h1 id="deploy-operations">Deploy &amp; Operations<a class="headerlink" href="#deploy-operations" title="Permanent link">&para;</a></h1>
-<p>This page documents how to deploy, monitor, and destroy the labs using
-<code>stage_deploy.sh</code>.</p>
-<hr />
-<h2 id="script-overview">Script Overview<a class="headerlink" href="#script-overview" title="Permanent link">&para;</a></h2>
-<p><code>stage_deploy.sh</code> performs a <strong>staged deployment</strong>:</p>
+<p>This page explains how the repository brings the lab up, what the staged workflow is doing, and how to operate the environment once it is running.</p>
+<h2 id="authoritative-workflow">Authoritative Workflow<a class="headerlink" href="#authoritative-workflow" title="Permanent link">&para;</a></h2>
+<p>The staged deployment entrypoint is <code>stage_deploy.sh</code>.</p>
+<p>Default behavior:</p>
 <ol>
-<li>Deploys the <strong>fabric lab</strong></li>
-<li>Waits for EVPN BGP convergence</li>
-<li>Deploys the <strong>management lab</strong></li>
-<li>Supports full teardown</li>
+<li>ensure persistent directories exist</li>
+<li>ensure the Docker management network <code>clab-mgmt</code> exists</li>
+<li>deploy the fabric topology</li>
+<li>poll EVPN status on all spines and leafs</li>
+<li>deploy the management topology</li>
 </ol>
-<hr />
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<h3 id="deploy-default">Deploy (default)<a class="headerlink" href="#deploy-default" title="Permanent link">&para;</a></h3>
+<p>That split is operationally useful because it prevents the management stack from starting before the network itself is stable.</p>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>From the lab root:</p>
 <div class="highlight"><pre><span></span><code>./stage_deploy.sh
 </code></pre></div>
-<p>Equivalent to:</p>
+<p>Explicit form:</p>
 <div class="highlight"><pre><span></span><code>./stage_deploy.sh<span class="w"> </span>topology.fabric.yaml<span class="w"> </span>topology.mgmt.yaml
 </code></pre></div>
-<hr />
-<h3 id="destroy-both-labs">Destroy both labs<a class="headerlink" href="#destroy-both-labs" title="Permanent link">&para;</a></h3>
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>./stage_deploy.sh<span class="w"> </span>destroy
 </code></pre></div>
-<p>Or explicitly:</p>
-<div class="highlight"><pre><span></span><code>./stage_deploy.sh<span class="w"> </span>destroy<span class="w"> </span>topology.fabric.yaml<span class="w"> </span>topology.mgmt.yaml
+<p>The script destroys the management topology first, then the fabric.</p>
+<h2 id="reconfigure-paths">Reconfigure Paths<a class="headerlink" href="#reconfigure-paths" title="Permanent link">&para;</a></h2>
+<p>The script supports faster partial actions:</p>
+<div class="highlight"><pre><span></span><code>./stage_deploy.sh<span class="w"> </span>-r
+./stage_deploy.sh<span class="w"> </span>-rf
+./stage_deploy.sh<span class="w"> </span>-rm
 </code></pre></div>
-<hr />
-<h2 id="what-happens-during-deploy">What Happens During Deploy<a class="headerlink" href="#what-happens-during-deploy" title="Permanent link">&para;</a></h2>
-<h3 id="stage-1-fabric">Stage 1 – Fabric<a class="headerlink" href="#stage-1-fabric" title="Permanent link">&para;</a></h3>
+<p>Meaning:</p>
 <ul>
-<li>Deploys <code>topology.fabric.yaml</code></li>
-<li>Starts spines, leafs, and hosts</li>
-<li>No management containers are started yet</li>
+<li><code>-r</code>: reconfigure both topologies</li>
+<li><code>-rf</code>: reconfigure only the fabric topology</li>
+<li><code>-rm</code>: reconfigure only the management topology</li>
 </ul>
-<h3 id="evpn-convergence-check">EVPN Convergence Check<a class="headerlink" href="#evpn-convergence-check" title="Permanent link">&para;</a></h3>
+<p><code>-rf</code> and <code>-rm</code> skip the full staged wait logic.</p>
+<h2 id="evpn-readiness-logic">EVPN Readiness Logic<a class="headerlink" href="#evpn-readiness-logic" title="Permanent link">&para;</a></h2>
+<p>The deployment script checks these containers:</p>
 <ul>
-<li>Polls all spines and leafs</li>
-<li>Runs <code>show bgp evpn summary</code></li>
-<li>Waits until <strong>all neighbors are <code>Estab</code></strong></li>
-<li>Displays a live progress bar</li>
-<li>Times out safely if convergence fails</li>
+<li><code>clab-arista-evpn-vxlan-fabric-spine1</code></li>
+<li><code>clab-arista-evpn-vxlan-fabric-spine2</code></li>
+<li><code>clab-arista-evpn-vxlan-fabric-leaf1</code></li>
+<li><code>clab-arista-evpn-vxlan-fabric-leaf2</code></li>
+<li><code>clab-arista-evpn-vxlan-fabric-leaf3</code></li>
+<li><code>clab-arista-evpn-vxlan-fabric-leaf4</code></li>
 </ul>
-<h3 id="stage-2-management">Stage 2 – Management<a class="headerlink" href="#stage-2-management" title="Permanent link">&para;</a></h3>
+<p>For each node it runs:</p>
+<div class="highlight"><pre><span></span><code>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn summary&quot;</span>
+</code></pre></div>
+<p>The lab is considered ready when all EVPN neighbors on all those nodes are in <code>Estab</code> or <code>Established</code> state.</p>
+<p>That is a reasonable gating signal for this lab because EVPN establishment depends on:</p>
 <ul>
-<li>Deploys <code>topology.mgmt.yaml</code></li>
-<li>Starts telemetry, logging, and ntopng</li>
-<li>ntopng immediately begins sniffing fabric traffic</li>
+<li>interface state</li>
+<li>underlay reachability</li>
+<li>loopback reachability</li>
+<li>overlay BGP health</li>
 </ul>
-<hr />
-<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<h2 id="useful-environment-variables">Useful Environment Variables<a class="headerlink" href="#useful-environment-variables" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
-<th>Description</th>
+<th>Meaning</th>
 <th>Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>MAX_WAIT</code></td>
-<td>EVPN convergence timeout (seconds)</td>
+<td>EVPN convergence timeout in seconds</td>
 <td><code>300</code></td>
 </tr>
 <tr>
 <td><code>POLL_INT</code></td>
-<td>Poll interval (seconds)</td>
+<td>polling interval in seconds</td>
 <td><code>10</code></td>
 </tr>
 <tr>
-<td><code>SKIP_TAP_BRIDGE</code></td>
-<td>Skip bridge creation check</td>
+<td><code>NO_COLOR</code></td>
+<td>disable color output</td>
 <td><code>0</code></td>
 </tr>
 <tr>
-<td><code>NO_COLOR</code></td>
-<td>Disable ANSI colors</td>
-<td><code>0</code></td>
+<td><code>FABRIC_LAB_NAME</code></td>
+<td>override fabric lab name</td>
+<td><code>arista-evpn-vxlan-fabric</code></td>
+</tr>
+<tr>
+<td><code>MGMT_LAB_NAME</code></td>
+<td>override mgmt lab name</td>
+<td><code>arista-evpn-vxlan-mgmt</code></td>
 </tr>
 </tbody>
 </table>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">MAX_WAIT</span><span class="o">=</span><span class="m">600</span><span class="w"> </span><span class="nv">POLL_INT</span><span class="o">=</span><span class="m">15</span><span class="w"> </span>./stage_deploy.sh
+<div class="highlight"><pre><span></span><code><span class="nv">MAX_WAIT</span><span class="o">=</span><span class="m">600</span><span class="w"> </span><span class="nv">POLL_INT</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>./stage_deploy.sh
 </code></pre></div>
-<hr />
-<h2 id="common-operations">Common Operations<a class="headerlink" href="#common-operations" title="Permanent link">&para;</a></h2>
-<h3 id="check-container-status">Check container status<a class="headerlink" href="#check-container-status" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>ps
+<h2 id="operational-access">Operational Access<a class="headerlink" href="#operational-access" title="Permanent link">&para;</a></h2>
+<h3 id="eos-cli">EOS CLI<a class="headerlink" href="#eos-cli" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w"> </span>Cli
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>clab-arista-evpn-vxlan-fabric-spine1<span class="w"> </span>Cli
 </code></pre></div>
-<h3 id="check-evpn-on-a-leaf">Check EVPN on a leaf<a class="headerlink" href="#check-evpn-on-a-leaf" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clab-arista-evpn-vxlan-fabric-leaf1<span class="w">   </span>Cli<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;show bgp evpn summary&quot;</span>
+<h3 id="linux-hosts">Linux Hosts<a class="headerlink" href="#linux-hosts" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>clab-arista-evpn-vxlan-fabric-host1<span class="w"> </span>bash
+docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>clab-arista-evpn-vxlan-fabric-host2<span class="w"> </span>bash
 </code></pre></div>
-<h3 id="restart-management-lab-only">Restart management lab only<a class="headerlink" href="#restart-management-lab-only" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>clab<span class="w"> </span>destroy<span class="w"> </span>-t<span class="w"> </span>topology.mgmt.yaml<span class="w"> </span>--cleanup
-clab<span class="w"> </span>deploy<span class="w"> </span>-t<span class="w"> </span>topology.mgmt.yaml
-</code></pre></div>
-<hr />
-<h2 id="failure-modes">Failure Modes<a class="headerlink" href="#failure-modes" title="Permanent link">&para;</a></h2>
-<h3 id="evpn-does-not-converge">EVPN does not converge<a class="headerlink" href="#evpn-does-not-converge" title="Permanent link">&para;</a></h3>
+<h3 id="management-services">Management Services<a class="headerlink" href="#management-services" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grafana</td>
+<td><code>http://localhost:3000</code></td>
+</tr>
+<tr>
+<td>Mimir</td>
+<td><code>http://localhost:9009</code></td>
+</tr>
+<tr>
+<td>Loki</td>
+<td><code>http://localhost:3100</code></td>
+</tr>
+<tr>
+<td>gNMIc exporter</td>
+<td><code>http://localhost:9804/metrics</code></td>
+</tr>
+<tr>
+<td>Alloy debug UI</td>
+<td><code>http://localhost:12345</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="management-stack-notes">Management Stack Notes<a class="headerlink" href="#management-stack-notes" title="Permanent link">&para;</a></h2>
+<p>The split management topology currently contains:</p>
 <ul>
-<li>Check underlay reachability</li>
-<li>Verify EOS configs</li>
-<li>Script proceeds to management deploy after timeout</li>
+<li><code>gnmic</code></li>
+<li><code>mimir</code></li>
+<li><code>grafana</code></li>
+<li><code>alloy</code></li>
+<li><code>loki</code></li>
+<li><code>redis</code></li>
 </ul>
-<h3 id="ntopng-sees-no-traffic">ntopng sees no traffic<a class="headerlink" href="#ntopng-sees-no-traffic" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Verify SPAN config on <code>leaf1</code></li>
-<li>Confirm <code>br-fabric-tap</code> exists and is UP</li>
-<li>Confirm ntopng is capturing <code>eth1</code></li>
-</ul>
-<hr />
-<h2 id="safety-notes">Safety Notes<a class="headerlink" href="#safety-notes" title="Permanent link">&para;</a></h2>
-<ul>
-<li><code>destroy</code> always removes <strong>both labs</strong></li>
-<li>Docker volumes under <code>persist/</code> are preserved</li>
-<li>Host Linux bridge is <strong>never deleted</strong> by the script</li>
-</ul>
+<p>The repository also includes an older combined topology that has additional inline services and slightly different packaging. When operating the split deployment, treat <code>topology.mgmt.yaml</code> as the source of truth.</p>
+<h2 id="recommended-day-2-workflow">Recommended Day-2 Workflow<a class="headerlink" href="#recommended-day-2-workflow" title="Permanent link">&para;</a></h2>
+<p>When you are experimenting with EVPN/VXLAN behavior:</p>
+<ol>
+<li>deploy the lab with the staged script</li>
+<li>verify underlay and overlay convergence</li>
+<li>test host-to-host reachability</li>
+<li>inspect EVPN route tables before and after traffic</li>
+<li>make one configuration change at a time</li>
+<li>use <code>-rf</code> when iterating only on the network fabric</li>
+</ol>
+<p>That keeps the failure domain small and makes regression analysis much easier.</p>
+<h2 id="documentation-publication">Documentation Publication<a class="headerlink" href="#documentation-publication" title="Permanent link">&para;</a></h2>
+<p>The MkDocs source lives under <code>docs/</code>. The root <code>mkdocs.yml</code> should be used as the site configuration for local preview and later GitHub Pages publishing.</p>
 
 
 

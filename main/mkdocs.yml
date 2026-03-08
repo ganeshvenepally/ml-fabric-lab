@@ -1,10 +1,5 @@
 site_name: Arista EVPN/VXLAN Containerlab Lab
-site_description: Split Fabric & Management containerlab labs with real traffic tap and observability stack.
-
-# Update after pushing:
-repo_url: https://github.com/<YOUR_ORG>/<YOUR_REPO>
-repo_name: <YOUR_ORG>/<YOUR_REPO>
-edit_uri: edit/main/docs/
+site_description: Deep documentation for the VXLAN/EVPN fabric, staged deployment workflow, and validation procedures.
 
 theme:
   name: material
@@ -16,27 +11,19 @@ theme:
     - navigation.top
     - content.code.copy
     - toc.follow
-  palette:
-    - scheme: default
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - scheme: slate
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
 
 nav:
   - Home: index.md
   - Topologies:
       - Fabric Lab: fabric.md
       - Management Lab: mgmt.md
-  - Operations:
-      - Deploy & Destroy: operations.md
-      - Troubleshooting: troubleshooting.md
   - Deep Dives:
       - EVPN Control Plane: evpn-control-plane.md
-      - ntopng Usage: ntopng.md
+      - Traffic Visibility: ntopng.md
+  - Operations:
+      - Deploy & Destroy: operations.md
+      - Validation & Testing: validation.md
+      - Troubleshooting: troubleshooting.md
 
 markdown_extensions:
   - admonition
@@ -46,16 +33,12 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
-
-  # Mermaid support
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-
-  # Code & formatting
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
@@ -67,8 +50,3 @@ plugins:
 
 extra_css:
   - styles/extra.css
-
-# Enable version selector when using mike for versioned docs
-extra:
-  version:
-    provider: mike

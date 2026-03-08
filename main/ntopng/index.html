@@ -6,13 +6,15 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Split Fabric & Management containerlab labs with real traffic tap.">
+        <meta name="description" content="Deep documentation for the VXLAN/EVPN fabric, staged deployment workflow, and validation procedures.">
       
       
       
       
         <link rel="prev" href="../evpn-control-plane/">
       
+      
+        <link rel="next" href="../operations/">
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>ntopng Usage - Arista EVPN/VXLAN Containerlab Lab</title>
+        <title>Traffic Visibility - Arista EVPN/VXLAN Containerlab Lab</title>
       
     
     
@@ -66,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ntopng-usage" class="md-skip">
+        <a href="#traffic-visibility-notes" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ntopng Usage
+              Traffic Visibility
             
           </span>
         </div>
@@ -210,26 +212,6 @@
   
   
   
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../operations/" class="md-tabs__link">
-          
-  
-  
-  Operations
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
     
   
   
@@ -241,6 +223,26 @@
   
   
   Deep Dives
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../operations/" class="md-tabs__link">
+          
+  
+  
+  Operations
 
         </a>
       </li>
@@ -427,121 +429,6 @@
       
   
   
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operations
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Operations
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../operations/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deploy & Destroy
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../troubleshooting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Troubleshooting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -563,10 +450,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -584,8 +471,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -646,7 +533,7 @@
   <span class="md-ellipsis">
     
   
-    ntopng Usage
+    Traffic Visibility
   
 
     
@@ -664,7 +551,7 @@
   <span class="md-ellipsis">
     
   
-    ntopng Usage
+    Traffic Visibility
   
 
     
@@ -690,10 +577,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#interface-model" class="md-nav__link">
+  <a href="#current-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interface Model
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fabric-side-span" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fabric-Side SPAN
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters
       
     </span>
   </a>
@@ -704,6 +613,149 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploy & Destroy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -743,10 +795,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#interface-model" class="md-nav__link">
+  <a href="#current-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interface Model
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fabric-side-span" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fabric-Side SPAN
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Matters
       
     </span>
   </a>
@@ -770,32 +844,35 @@
 
 
 
-<h1 id="ntopng-usage">ntopng Usage<a class="headerlink" href="#ntopng-usage" title="Permanent link">&para;</a></h1>
-<p>This page explains how ntopng is used in this lab to analyze <strong>real mirrored fabric traffic</strong>.</p>
-<hr />
-<h2 id="interface-model">Interface Model<a class="headerlink" href="#interface-model" title="Permanent link">&para;</a></h2>
-<p>In this design:</p>
-<table>
-<thead>
-<tr>
-<th>Interface</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>eth0</code></td>
-<td>Management (<code>clab-mgmt</code>)</td>
-</tr>
-<tr>
-<td><code>eth1</code></td>
-<td>Tap (<code>br-fabric-tap</code>)</td>
-</tr>
-</tbody>
-</table>
-<p>ntopng is started with:</p>
-<p>```bash
-ntopng --community --redis redis -i eth1 --disable-autologout</p>
+<h1 id="traffic-visibility-notes">Traffic Visibility Notes<a class="headerlink" href="#traffic-visibility-notes" title="Permanent link">&para;</a></h1>
+<p>This repository includes packet-visibility ideas, but the exact ntopng placement depends on which topology variant you use.</p>
+<h2 id="current-state">Current State<a class="headerlink" href="#current-state" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The staged split deployment uses <code>topology.fabric.yaml</code> and <code>topology.mgmt.yaml</code>.</li>
+<li>The older combined topology <code>ml-clab-topo.yml</code> contains a fuller inline packet-visibility design.</li>
+</ul>
+<h2 id="fabric-side-span">Fabric-Side SPAN<a class="headerlink" href="#fabric-side-span" title="Permanent link">&para;</a></h2>
+<p><code>leaf1</code> is the only leaf with explicit SPAN configuration in the EOS config:</p>
+<div class="highlight"><pre><span></span><code>monitor session SPAN source Ethernet1
+monitor session SPAN source Ethernet2
+monitor session SPAN source Ethernet10
+monitor session SPAN destination Ethernet5
+</code></pre></div>
+<p>That means the mirrored packet stream consists of:</p>
+<ul>
+<li>uplink traffic to/from <code>spine1</code></li>
+<li>uplink traffic to/from <code>spine2</code></li>
+<li>access traffic to/from <code>host1</code></li>
+</ul>
+<h2 id="why-this-matters">Why This Matters<a class="headerlink" href="#why-this-matters" title="Permanent link">&para;</a></h2>
+<p>It gives you a packet-level view of:</p>
+<ul>
+<li>ARP resolution</li>
+<li>host onboarding</li>
+<li>VXLAN-bearing traffic on the fabric edge</li>
+<li>throughput tests from <code>host1</code> to <code>host2</code></li>
+</ul>
+<p>For the VXLAN/EVPN documentation set, SPAN is best treated as an adjunct troubleshooting aid rather than part of the control-plane design itself.</p>
 
 
 
