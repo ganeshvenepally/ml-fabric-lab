@@ -58,6 +58,38 @@ topology:
         - ip route replace default via 192.168.10.1
         - sh -lc 'iperf3 -s -D'
 
+    host3:
+      kind: linux
+      mgmt-ipv4: 172.20.20.103
+      exec:
+        - ip link set eth1 up
+        - ip addr add 192.168.20.101/24 dev eth1
+        - ip route replace default via 192.168.20.1
+
+    host4:
+      kind: linux
+      mgmt-ipv4: 172.20.20.104
+      exec:
+        - ip link set eth1 up
+        - ip addr add 192.168.20.102/24 dev eth1
+        - ip route replace default via 192.168.20.1
+
+    host5:
+      kind: linux
+      mgmt-ipv4: 172.20.20.105
+      exec:
+        - ip link set eth1 up
+        - ip addr add 192.168.20.103/24 dev eth1
+        - ip route replace default via 192.168.20.1
+
+    host6:
+      kind: linux
+      mgmt-ipv4: 172.20.20.106
+      exec:
+        - ip link set eth1 up
+        - ip addr add 192.168.20.104/24 dev eth1
+        - ip route replace default via 192.168.20.1
+
     ntopng:
       kind: linux
       image: ntop/ntopng:latest
@@ -85,4 +117,8 @@ topology:
 
     # Hosts
     - endpoints: ["host1:eth1", "leaf1:eth10"]
+    - endpoints: ["host3:eth1", "leaf1:eth11"]
+    - endpoints: ["host4:eth1", "leaf2:eth10"]
+    - endpoints: ["host5:eth1", "leaf3:eth10"]
     - endpoints: ["host2:eth1", "leaf4:eth10"]
+    - endpoints: ["host6:eth1", "leaf4:eth11"]
