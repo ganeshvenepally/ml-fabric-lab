@@ -1,0 +1,33 @@
+{
+  "freeTextAnnotations": [],
+  "freeShapeAnnotations": [],
+  "trafficRateAnnotations": [],
+  "groupStyleAnnotations": [],
+  "networkNodeAnnotations": [],
+  "nodeAnnotations": [
+    {
+      "id": "r1",
+      "position": {
+        "x": 380,
+        "y": 400
+      }
+    },
+    {
+      "id": "r2",
+      "position": {
+        "x": 440,
+        "y": 260
+      }
+    },
+    {
+      "id": "poller",
+      "position": {
+        "x": 520,
+        "y": 400
+      }
+    }
+  ],
+  "edgeAnnotations": [],
+  "aliasEndpointAnnotations": [],
+  "viewerSettings": {}
+}
